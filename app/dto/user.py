@@ -35,6 +35,13 @@ class UserRegister(BaseModel):
         json_schema_extra = {
             'example': {
                 'username': 'twoics',
-                'password': 'hello world',
+                'password': 'qwerty',
             }
         }
+
+
+class UserUpdate(BaseModel):
+    username: str
+
+    class Config:
+        json_schema_extra = {'example': {'username': 'twoics'}}

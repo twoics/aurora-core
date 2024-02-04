@@ -1,43 +1,25 @@
 from fastapi import APIRouter
-from fastapi import Body
 from fastapi import Depends
 from fastapi import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm as OAuthForm
 from starlette import status
-from starlette.responses import Response
 
 from app.dependencies.auth import get_auth_service
 from app.dependencies.auth import get_current_user
 from app.dependencies.repo import user_repo
-from app.dto.user import UserRegister
 from app.models import User
-from app.repo.user import UserRepository
+from app.repo.user.proto import UserRepo
 from app.services.auth.credentials import verify_password
 from app.services.auth.tokens import TokenAuth
 
 router = APIRouter()
 
 
-@router.post('/register')
-async def register(
-    user: UserRegister = Body(...),
-    repo: UserRepository = Depends(user_repo),
-):
-    """Register user by username and password"""
-
-    exist_user = await repo.get_by_name(user.username)
-    if exist_user:
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail='User already exists')
-
-    await repo.create_user(UserRegister(**user.dict()))
-    return Response(status.HTTP_201_CREATED)
-
-
 @router.post('/login')
 async def login(
     form_data: OAuthForm = Depends(OAuthForm),
     auth_service: TokenAuth = Depends(get_auth_service),
-    repo: UserRepository = Depends(user_repo),
+    repo: UserRepo = Depends(user_repo),
 ):
     """Login user by username and password"""
 

@@ -1,7 +1,8 @@
-from app.repo.user import UserRepository
+from app.repo.user.mongo import UserMongoRepository
+from app.repo.user.proto import UserRepo
 
 
-async def user_repo() -> UserRepository:
+async def user_repo() -> UserRepo:
     """Get user repository"""
 
-    return UserRepository()
+    return UserMongoRepository()
