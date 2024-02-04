@@ -7,8 +7,10 @@ from starlette import status
 from starlette.responses import Response
 
 from app.dependencies.auth import get_auth_service
+from app.dependencies.auth import get_current_user
 from app.dependencies.repo import user_repo
 from app.dto.user import UserRegister
+from app.models import User
 from app.repo.user import UserRepository
 from app.services.auth.credentials import verify_password
 from app.services.auth.tokens import TokenAuth
@@ -47,5 +49,14 @@ async def login(
 
 
 @router.post('/refresh')
-async def refresh(refresh_token: str, token: TokenAuth = Depends(get_auth_service)):
+async def refresh(
+    refresh_token: str,
+    access_token: str,
+    user: User = Depends(get_current_user),
+    auth_service: TokenAuth = Depends(get_auth_service),
+):
     """Refresh token pair by refresh token"""
+
+    if not await auth_service.can_renew_tokens(access_token, refresh_token):
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail='Token has expired')
+    return {**await auth_service.generate_tokens(user)}

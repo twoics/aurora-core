@@ -20,7 +20,7 @@ def get_auth_service(conf: Settings = Depends(get_settings)) -> TokenAuth:
 
 
 async def get_current_user(
-    access_token: OAuth2PasswordBearer = Depends(oauth2_scheme),
+    access_token: str = Depends(oauth2_scheme),
     auth_service: TokenAuth = Depends(get_auth_service),
     repo: UserRepository = Depends(user_repo),
 ) -> User:
