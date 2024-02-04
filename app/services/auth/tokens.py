@@ -15,11 +15,16 @@ class Tokens(TypedDict):
     refresh_token: str
 
 
+class TokenClaims(TypedDict):
+    sub: str  # user_id
+    is_admin: bool
+
+
 class TokenAuth:
     def __init__(self, conf: Settings):
         self._conf = conf
 
-    async def decode_token(self, token) -> dict | None:
+    async def decode_token(self, token) -> TokenClaims | None:
         """Return claims of this token if token valid else None"""
 
         try:
@@ -50,7 +55,12 @@ class TokenAuth:
         """Generate a JWT token"""
 
         expire = datetime.now(timezone.utc) + timedelta(minutes=expire_minutes)
-        to_encode = {'exp': expire, 'sub': str(user.id), **kwargs}
+        to_encode = {
+            'exp': expire,
+            'sub': str(user.id),
+            'is_admin': user.is_admin,
+            **kwargs,
+        }
         encoded_jwt = jwt.encode(
             to_encode, self._conf.SECRET_KEY, algorithm=self._conf.ALGORITHM
         )
