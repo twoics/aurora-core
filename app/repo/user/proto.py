@@ -16,5 +16,5 @@ class UserRepo(typing.Protocol):
     async def get_by_id(self, user_id: str) -> User | None:
         ...
 
-    async def update_user(self, user_id: str, user: UserUpdate) -> None:
+    async def update_user(self, username: str, user: UserUpdate) -> None:
         ...
