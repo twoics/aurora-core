@@ -1,11 +1,12 @@
+from datetime import datetime
 from datetime import timedelta
+from datetime import timezone
 from typing import TypedDict
 
 from jose import jwt
 from jose import JWTError
 
 from app.config.config import Settings
-from app.dependencies import current_utctime
 from app.models import User
 
 
@@ -48,7 +49,7 @@ class TokenAuth:
     async def _generate_token(self, user: User, expire_minutes: int, **kwargs) -> str:
         """Generate a JWT token"""
 
-        expire = current_utctime() + timedelta(minutes=expire_minutes)
+        expire = datetime.now(timezone.utc) + timedelta(minutes=expire_minutes)
         to_encode = {'exp': expire, 'sub': str(user.id), **kwargs}
         encoded_jwt = jwt.encode(
             to_encode, self._conf.SECRET_KEY, algorithm=self._conf.ALGORITHM

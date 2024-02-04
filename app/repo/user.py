@@ -1,6 +1,6 @@
 from app.dto.user import UserRegister
 from app.models import User
-from app.services.auth import get_password_hash
+from app.services.auth.credentials import get_password_hash
 
 
 class UserRepository:
