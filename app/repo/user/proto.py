@@ -1,6 +1,7 @@
 import typing
 
 from app.dto.user import UserRegister
+from app.dto.user import UserUpdate
 from app.models import User
 
 
@@ -13,4 +14,7 @@ class UserRepo(typing.Protocol):
         ...
 
     async def get_by_id(self, user_id: str) -> User | None:
+        ...
+
+    async def update_user(self, user_id: str, user: UserUpdate) -> None:
         ...
