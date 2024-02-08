@@ -2,13 +2,14 @@ from typing import List
 from typing import Optional
 
 from beanie import Document
+from beanie import Indexed
 from beanie import Link
 
 from app.models.user import User
 
 
 class Matrix(Document):
-    uuid: str
+    uuid: Indexed(str, unique=True)
     name: str
     is_active: bool = True
     users: Optional[List[Link[User]]] = None
