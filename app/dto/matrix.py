@@ -20,6 +20,14 @@ class MatrixUpdate(MatrixCreate):
 class MatrixGet(BaseModel):
     uuid: str
     name: str
+
+    class Config:
+        json_schema_extra = {'example': {'uuid': '0SN91roa6', 'name': 'aurora'}}
+
+
+class MatrixDetailGet(BaseModel):
+    uuid: str
+    name: str
     users: List[UserRead]
 
     class Config:

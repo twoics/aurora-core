@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import APIRouter
 from fastapi import Body
 from fastapi import Depends
@@ -5,6 +7,7 @@ from fastapi import Path
 from starlette.responses import Response
 
 from app.dependencies.auth import get_admin_user
+from app.dependencies.auth import get_current_user
 from app.dependencies.repo import matrix_repo
 from app.dependencies.repo import user_repo
 from app.dependencies.valid import matrix_uuid_exist
@@ -12,8 +15,10 @@ from app.dependencies.valid import user_in_group
 from app.dependencies.valid import user_not_in_group
 from app.dependencies.valid import username_is_exist
 from app.dto.matrix import MatrixCreate
+from app.dto.matrix import MatrixDetailGet
 from app.dto.matrix import MatrixGet
 from app.dto.matrix import MatrixUpdate
+from app.models import User
 from app.repo.matrix.proto import MatrixRepo
 from app.repo.user.proto import UserRepo
 
@@ -34,7 +39,7 @@ async def create_matrix(
 @router.put(
     '/{uuid}',
     dependencies=[Depends(get_admin_user), Depends(matrix_uuid_exist)],
-    response_model=MatrixGet,
+    response_model=MatrixDetailGet,
 )
 async def update_matrix(
     uuid: str = Path(),
@@ -68,10 +73,19 @@ async def add_matrix_user(
     return Response(status_code=201)
 
 
+@router.get('/my', response_model=List[MatrixGet])
+async def my_matrices(
+    user: User = Depends(get_current_user), repo: MatrixRepo = Depends(matrix_repo)
+):
+    """List all matrix what user have"""
+
+    return await repo.user_matrices(user)
+
+
 @router.get(
     '/{uuid}',
     dependencies=[Depends(get_admin_user), Depends(matrix_uuid_exist)],
-    response_model=MatrixGet,
+    response_model=MatrixDetailGet,
 )
 async def get_matrix(
     uuid: str = Path(),

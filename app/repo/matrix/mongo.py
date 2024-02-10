@@ -1,9 +1,11 @@
+import typing
+
 from beanie.odm.operators.update.array import Pull
 from beanie.odm.operators.update.array import Push
 from beanie.odm.operators.update.general import Set
 
 from app.dto.matrix import MatrixCreate
-from app.dto.matrix import MatrixGet
+from app.dto.matrix import MatrixDetailGet
 from app.dto.matrix import MatrixUpdate
 from app.models import Matrix
 from app.models import User
@@ -14,7 +16,7 @@ class MatrixMongoRepository(MatrixRepo):
     async def get_by_uuid(self, matrix_uuid: str) -> Matrix | None:
         return await Matrix.find_one(Matrix.uuid == matrix_uuid)
 
-    async def detail_by_uuid(self, matrix_uuid: str) -> MatrixGet | None:
+    async def detail_by_uuid(self, matrix_uuid: str) -> MatrixDetailGet | None:
         return (
             await (await self.get_by_uuid(matrix_uuid))
             .aggregate(
@@ -28,7 +30,7 @@ class MatrixMongoRepository(MatrixRepo):
                         }
                     }
                 ],
-                projection_model=MatrixGet,
+                projection_model=MatrixDetailGet,
             )
             .to_list()
         )[0]
@@ -51,3 +53,6 @@ class MatrixMongoRepository(MatrixRepo):
 
     async def user_exists(self, matrix_uuid: str, user: User) -> bool:
         return bool(await Matrix.find_one(Matrix.users == user.id))
+
+    async def user_matrices(self, user: User) -> typing.List[Matrix]:
+        return await Matrix.find_many(Matrix.users == user.id).to_list()
