@@ -23,3 +23,6 @@ class MatrixRepo(typing.Protocol):
 
     async def detail_by_uuid(self, matrix_uuid: str) -> MatrixGet | None:
         ...
+
+    async def user_exists(self, matrix_uuid: str, user: User) -> bool:
+        ...

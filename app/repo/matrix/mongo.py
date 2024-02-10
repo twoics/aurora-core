@@ -42,3 +42,6 @@ class MatrixMongoRepository(MatrixRepo):
         await (await self.get_by_uuid(matrix_uuid)).update(
             Push({Matrix.users: user.id})
         )
+
+    async def user_exists(self, matrix_uuid: str, user: User) -> bool:
+        return bool(await Matrix.find_one(Matrix.users == user.id))
