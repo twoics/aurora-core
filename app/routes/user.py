@@ -27,7 +27,7 @@ async def register(
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail='User already exists')
 
     await repo.create_user(UserRegister(**user.dict()))
-    return Response(status.HTTP_201_CREATED)
+    return Response(status_code=status.HTTP_201_CREATED)
 
 
 @router.put(
