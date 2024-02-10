@@ -1,4 +1,8 @@
+from typing import List
+
 from pydantic import BaseModel
+
+from app.dto.user import UserRead
 
 
 class MatrixCreate(BaseModel):
@@ -7,3 +11,31 @@ class MatrixCreate(BaseModel):
 
     class Config:
         json_schema_extra = {'example': {'uuid': '0SN91roa6', 'name': 'first-matrix'}}
+
+
+class MatrixUpdate(MatrixCreate):
+    pass
+
+
+class MatrixGet(BaseModel):
+    uuid: str
+    name: str
+    users: List[UserRead]
+
+    class Config:
+        json_schema_extra = {
+            'example': {
+                'uuid': '0SN91roa6',
+                'name': 'first-matrix',
+                'users': [
+                    {
+                        'username': 'twoics',
+                        'is_admin': True,
+                    },
+                    {
+                        'username': 'amogus',
+                        'is_admin': False,
+                    },
+                ],
+            }
+        }
