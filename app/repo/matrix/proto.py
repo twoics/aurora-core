@@ -15,6 +15,9 @@ class MatrixRepo(typing.Protocol):
     async def add_user(self, matrix_uuid: str, user: User) -> None:
         ...
 
+    async def remove_user(self, matrix_uuid: str, user: User) -> None:
+        ...
+
     async def update_matrix(self, matrix_uuid: str, matrix: MatrixUpdate) -> None:
         ...
 

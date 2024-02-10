@@ -8,6 +8,7 @@ from app.dependencies.auth import get_admin_user
 from app.dependencies.repo import matrix_repo
 from app.dependencies.repo import user_repo
 from app.dependencies.valid import matrix_uuid_exist
+from app.dependencies.valid import user_in_group
 from app.dependencies.valid import user_not_in_group
 from app.dependencies.valid import username_is_exist
 from app.dto.matrix import MatrixCreate
@@ -79,3 +80,24 @@ async def get_matrix(
     """Get an existing matrix by uuid"""
 
     return await repo.detail_by_uuid(uuid)
+
+
+@router.delete(
+    '/{uuid}/remove/{username}',
+    dependencies=[
+        Depends(get_admin_user),
+        Depends(matrix_uuid_exist),
+        Depends(username_is_exist),
+        Depends(user_in_group),
+    ],
+)
+async def remove_matrix_user(
+    uuid: str = Path(),
+    username: str = Path(),
+    m_repo: MatrixRepo = Depends(matrix_repo),
+    u_repo: UserRepo = Depends(user_repo),
+):
+    """Remove a user from the matrix users"""
+
+    await m_repo.remove_user(uuid, await u_repo.get_by_name(username))
+    return Response(status_code=204)

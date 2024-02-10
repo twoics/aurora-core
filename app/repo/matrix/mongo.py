@@ -1,3 +1,4 @@
+from beanie.odm.operators.update.array import Pull
 from beanie.odm.operators.update.array import Push
 from beanie.odm.operators.update.general import Set
 
@@ -41,6 +42,11 @@ class MatrixMongoRepository(MatrixRepo):
     async def add_user(self, matrix_uuid: str, user: User) -> None:
         await (await self.get_by_uuid(matrix_uuid)).update(
             Push({Matrix.users: user.id})
+        )
+
+    async def remove_user(self, matrix_uuid: str, user: User) -> None:
+        await (await self.get_by_uuid(matrix_uuid)).update(
+            Pull({Matrix.users: user.id})
         )
 
     async def user_exists(self, matrix_uuid: str, user: User) -> bool:
