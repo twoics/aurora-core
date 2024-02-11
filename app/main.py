@@ -13,8 +13,9 @@ from app.routes.user import router as user_router
 
 
 @contextlib.asynccontextmanager
-async def aiomqtt_lifespan(*_):
+async def lifespan(*_):
     conf = get_settings()
+    await init_database()
     async with aiomqtt.Client(
         conf.MQTT_HOST,
         username=conf.MQTT_USERNAME,
@@ -25,13 +26,7 @@ async def aiomqtt_lifespan(*_):
         yield
 
 
-app = FastAPI(lifespan=aiomqtt_lifespan)
-
-
-@app.on_event('startup')
-async def start_database():
-    await init_database()
-
+app = FastAPI(lifespan=lifespan)
 
 app.include_router(auth_router, tags=['Auth'], prefix='/auth')
 app.include_router(user_router, tags=['User'], prefix='/user')
