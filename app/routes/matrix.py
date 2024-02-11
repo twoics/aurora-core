@@ -8,12 +8,12 @@ from starlette.responses import Response
 
 from app.dependencies.auth import get_admin_user
 from app.dependencies.auth import get_current_user
+from app.dependencies.group import matrix_uuid_exist
+from app.dependencies.group import user_in_group
+from app.dependencies.group import user_not_in_group
+from app.dependencies.group import username_is_exist
 from app.dependencies.repo import matrix_repo
 from app.dependencies.repo import user_repo
-from app.dependencies.valid import matrix_uuid_exist
-from app.dependencies.valid import user_in_group
-from app.dependencies.valid import user_not_in_group
-from app.dependencies.valid import username_is_exist
 from app.dto.matrix import MatrixCreate
 from app.dto.matrix import MatrixDetailGet
 from app.dto.matrix import MatrixGet
