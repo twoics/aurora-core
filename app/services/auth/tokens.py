@@ -3,11 +3,10 @@ from datetime import timedelta
 from datetime import timezone
 from typing import TypedDict
 
+from config.config import Settings
 from jose import jwt
 from jose import JWTError
-
-from app.config.config import Settings
-from app.models import User
+from models import User
 
 
 class Tokens(TypedDict):

@@ -1,16 +1,15 @@
+from config.config import Settings
+from dependencies.config import get_settings
+from dependencies.repo import user_repo
 from fastapi import Depends
 from fastapi import HTTPException
 from fastapi import WebSocket
 from fastapi import WebSocketException
 from fastapi.security import OAuth2PasswordBearer
+from models import User
+from repo.user.proto import UserRepo
+from services.auth.tokens import TokenAuth
 from starlette import status
-
-from app.config.config import Settings
-from app.dependencies.config import get_settings
-from app.dependencies.repo import user_repo
-from app.models import User
-from app.repo.user.proto import UserRepo
-from app.services.auth.tokens import TokenAuth
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='auth/login')
 

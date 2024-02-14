@@ -2,10 +2,9 @@ from datetime import datetime
 from datetime import timezone
 
 import pytz
+from config.config import Settings
+from dependencies.config import get_settings
 from fastapi import Depends
-
-from app.config.config import Settings
-from app.dependencies.config import get_settings
 
 
 def current_utctime() -> datetime:

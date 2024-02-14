@@ -1,11 +1,10 @@
+from dependencies.repo import matrix_repo
+from dependencies.repo import user_repo
 from fastapi import Depends
 from fastapi import HTTPException
+from repo.matrix.proto import MatrixRepo
+from repo.user.proto import UserRepo
 from starlette import status
-
-from app.dependencies.repo import matrix_repo
-from app.dependencies.repo import user_repo
-from app.repo.matrix.proto import MatrixRepo
-from app.repo.user.proto import UserRepo
 
 
 async def _user_in_matrix_group(

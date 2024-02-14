@@ -1,10 +1,10 @@
 import typing
 
-from app.dto.matrix import MatrixCreate
-from app.dto.matrix import MatrixDetailGet
-from app.dto.matrix import MatrixUpdate
-from app.models import Matrix
-from app.models import User
+from dto.matrix import MatrixCreate
+from dto.matrix import MatrixDetailGet
+from dto.matrix import MatrixUpdate
+from models import Matrix
+from models import User
 
 
 @typing.runtime_checkable

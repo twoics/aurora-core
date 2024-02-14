@@ -2,14 +2,13 @@ import contextlib
 import random
 
 import aiomqtt
+from config.base import init_database
+from dependencies.config import get_settings
 from fastapi import FastAPI
-
-from app.config.base import init_database
-from app.dependencies.config import get_settings
-from app.routes.auth import router as auth_router
-from app.routes.control import router as rc_router
-from app.routes.matrix import router as matrix_router
-from app.routes.user import router as user_router
+from routes.auth import router as auth_router
+from routes.control import router as rc_router
+from routes.matrix import router as matrix_router
+from routes.user import router as user_router
 
 
 @contextlib.asynccontextmanager

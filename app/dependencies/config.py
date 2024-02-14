@@ -1,4 +1,4 @@
-from app.config.config import Settings
+from config.config import Settings
 
 
 def get_settings() -> Settings:

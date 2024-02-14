@@ -1,11 +1,10 @@
 from beanie.odm.operators.update.general import Set
 from bson import ObjectId
-
-from app.dto.user import UserRegister
-from app.dto.user import UserUpdate
-from app.models import User
-from app.repo.user.proto import UserRepo
-from app.services.auth.credentials import get_password_hash
+from dto.user import UserRegister
+from dto.user import UserUpdate
+from models import User
+from repo.user.proto import UserRepo
+from services.auth.credentials import get_password_hash
 
 
 class UserMongoRepository(UserRepo):

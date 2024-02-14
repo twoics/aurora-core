@@ -1,7 +1,6 @@
 from fastapi import WebSocket
-
-from app.services.delivery.mqtt import MqttDelivery
-from app.services.delivery.proto import Delivery
+from services.delivery.mqtt import MqttDelivery
+from services.delivery.proto import Delivery
 
 
 def get_delivery(websocket: WebSocket) -> Delivery:

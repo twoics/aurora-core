@@ -1,16 +1,15 @@
+from dependencies.auth import get_admin_user
+from dependencies.repo import user_repo
+from dto.user import UserRegister
+from dto.user import UserUpdate
 from fastapi import APIRouter
 from fastapi import Body
 from fastapi import Depends
 from fastapi import HTTPException
 from fastapi import Path
+from repo.user.proto import UserRepo
 from starlette import status
 from starlette.responses import Response
-
-from app.dependencies.auth import get_admin_user
-from app.dependencies.repo import user_repo
-from app.dto.user import UserRegister
-from app.dto.user import UserUpdate
-from app.repo.user.proto import UserRepo
 
 router = APIRouter()
 

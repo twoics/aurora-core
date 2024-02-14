@@ -1,16 +1,15 @@
+from dependencies.auth import get_auth_service
+from dependencies.auth import get_current_user
+from dependencies.repo import user_repo
 from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm as OAuthForm
+from models import User
+from repo.user.proto import UserRepo
+from services.auth.credentials import verify_password
+from services.auth.tokens import TokenAuth
 from starlette import status
-
-from app.dependencies.auth import get_auth_service
-from app.dependencies.auth import get_current_user
-from app.dependencies.repo import user_repo
-from app.models import User
-from app.repo.user.proto import UserRepo
-from app.services.auth.credentials import verify_password
-from app.services.auth.tokens import TokenAuth
 
 router = APIRouter()
 
