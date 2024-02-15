@@ -5,6 +5,7 @@ import aiomqtt
 from config.base import init_database
 from dependencies.config import get_settings
 from fastapi import FastAPI
+from prometheus_fastapi_instrumentator import Instrumentator
 from routes.auth import router as auth_router
 from routes.control import router as rc_router
 from routes.matrix import router as matrix_router
@@ -26,6 +27,7 @@ async def lifespan(*_):
 
 
 app = FastAPI(lifespan=lifespan)
+Instrumentator().instrument(app).expose(app)
 
 app.include_router(auth_router, tags=['Auth'], prefix='/auth')
 app.include_router(user_router, tags=['User'], prefix='/user')
