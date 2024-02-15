@@ -1,8 +1,8 @@
 import typing
 
-from app.dto.user import UserRegister
-from app.dto.user import UserUpdate
-from app.models import User
+from dto.user import UserRegister
+from dto.user import UserUpdate
+from models import User
 
 
 @typing.runtime_checkable

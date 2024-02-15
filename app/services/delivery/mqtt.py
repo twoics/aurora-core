@@ -1,8 +1,7 @@
 import typing
 
 from aiomqtt import Client
-
-from app.services.delivery.proto import Delivery
+from services.delivery.proto import Delivery
 
 
 class MqttDelivery(Delivery):

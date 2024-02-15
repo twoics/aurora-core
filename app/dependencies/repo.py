@@ -1,7 +1,7 @@
-from app.repo.matrix.mongo import MatrixMongoRepository
-from app.repo.matrix.proto import MatrixRepo
-from app.repo.user.mongo import UserMongoRepository
-from app.repo.user.proto import UserRepo
+from repo.matrix.mongo import MatrixMongoRepository
+from repo.matrix.proto import MatrixRepo
+from repo.user.mongo import UserMongoRepository
+from repo.user.proto import UserRepo
 
 
 async def user_repo() -> UserRepo:

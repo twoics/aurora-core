@@ -1,26 +1,25 @@
 from typing import List
 
+from dependencies.auth import get_admin_user
+from dependencies.auth import get_current_user
+from dependencies.group import matrix_uuid_exist
+from dependencies.group import user_in_group
+from dependencies.group import user_not_in_group
+from dependencies.group import username_is_exist
+from dependencies.repo import matrix_repo
+from dependencies.repo import user_repo
+from dto.matrix import MatrixCreate
+from dto.matrix import MatrixDetailGet
+from dto.matrix import MatrixGet
+from dto.matrix import MatrixUpdate
 from fastapi import APIRouter
 from fastapi import Body
 from fastapi import Depends
 from fastapi import Path
+from models import User
+from repo.matrix.proto import MatrixRepo
+from repo.user.proto import UserRepo
 from starlette.responses import Response
-
-from app.dependencies.auth import get_admin_user
-from app.dependencies.auth import get_current_user
-from app.dependencies.group import matrix_uuid_exist
-from app.dependencies.group import user_in_group
-from app.dependencies.group import user_not_in_group
-from app.dependencies.group import username_is_exist
-from app.dependencies.repo import matrix_repo
-from app.dependencies.repo import user_repo
-from app.dto.matrix import MatrixCreate
-from app.dto.matrix import MatrixDetailGet
-from app.dto.matrix import MatrixGet
-from app.dto.matrix import MatrixUpdate
-from app.models import User
-from app.repo.matrix.proto import MatrixRepo
-from app.repo.user.proto import UserRepo
 
 router = APIRouter()
 

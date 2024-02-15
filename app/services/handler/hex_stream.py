@@ -1,8 +1,8 @@
 from typing import List
 from typing import Tuple
 
-from app.models import User
-from app.services.handler.proto import StreamHandler
+from models import User
+from services.handler.proto import StreamHandler
 
 
 class HexHandler(StreamHandler):

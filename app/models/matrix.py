@@ -3,8 +3,7 @@ from typing import List
 from beanie import Document
 from beanie import Indexed
 from beanie import Link
-
-from app.models.user import User
+from models.user import User
 
 
 class Matrix(Document):

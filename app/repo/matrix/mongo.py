@@ -3,13 +3,12 @@ import typing
 from beanie.odm.operators.update.array import Pull
 from beanie.odm.operators.update.array import Push
 from beanie.odm.operators.update.general import Set
-
-from app.dto.matrix import MatrixCreate
-from app.dto.matrix import MatrixDetailGet
-from app.dto.matrix import MatrixUpdate
-from app.models import Matrix
-from app.models import User
-from app.repo.matrix.proto import MatrixRepo
+from dto.matrix import MatrixCreate
+from dto.matrix import MatrixDetailGet
+from dto.matrix import MatrixUpdate
+from models import Matrix
+from models import User
+from repo.matrix.proto import MatrixRepo
 
 
 class MatrixMongoRepository(MatrixRepo):

@@ -1,6 +1,6 @@
 import typing
 
-from app.models import User
+from models import User
 
 
 @typing.runtime_checkable

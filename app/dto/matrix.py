@@ -1,8 +1,7 @@
 from typing import List
 
+from dto.user import UserRead
 from pydantic import BaseModel
-
-from app.dto.user import UserRead
 
 
 class MatrixCreate(BaseModel):
