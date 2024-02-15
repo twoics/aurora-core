@@ -3,7 +3,7 @@ version: '3.0'
 services:
   mongo:
     image: mongo:latest
-    restart: always
+    restart: unless-stopped
     ports:
       - "27017:27017"
     env_file:
@@ -20,6 +20,7 @@ services:
       - ./.env
     depends_on:
       - mongo
+    restart: unless-stopped
 
   prometheus:
     image: prom/prometheus:latest
@@ -33,6 +34,7 @@ services:
       - --config.file=/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
+    restart: unless-stopped
 
   grafana:
     image: grafana/grafana
