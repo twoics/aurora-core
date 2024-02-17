@@ -27,7 +27,8 @@ async def clear_cache():
     """Called when app shutdown for clear all application cache"""
 
     redis = get_redis()
-    async for key in redis.scan_iter('aurora:*'):
+    conf = get_settings()
+    async for key in redis.scan_iter(f'{conf.GLOBAL_CASH_KEY_PREFIX}:*'):
         await redis.delete(key)
 
 
