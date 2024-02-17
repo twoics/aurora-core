@@ -31,11 +31,11 @@ class MatrixConnectionsPool(MatrixConnectionsPoolProto):
     async def get_user_matrices(self, user: User) -> List[str]:
         """Get all matrices ids to which the user is connected"""
 
-        keys = await self._redis.keys(f'm-clients:{str(user.pk)}:*')
+        keys = await self._redis.keys(f'm-clients:{str(user.id)}:*')
         return await self._redis.mget(keys)
 
     @staticmethod
     async def _get_user_key(user: User, matrix: Matrix) -> str:
         """Generate key for user"""
 
-        return f'm-clients:{str(user.pk)}:{str(matrix.id)}'
+        return f'm-clients:{str(user.id)}:{str(matrix.id)}'
