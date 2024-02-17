@@ -18,3 +18,9 @@ class UserRepo(typing.Protocol):
 
     async def update_user(self, username: str, user: UserUpdate) -> None:
         ...
+
+    async def block_user(self, user: User) -> None:
+        ...
+
+    async def unblock_user(self, user: User) -> None:
+        ...
