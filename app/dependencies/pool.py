@@ -5,7 +5,7 @@ from services.pool.clients import MatrixConnectionsPool
 from services.pool.proto import MatrixConnectionsPoolProto
 
 
-async def get_user_connections_pool(
+async def get_matrix_connections_pool(
     redis: AsyncRedis = Depends(get_redis),
 ) -> MatrixConnectionsPoolProto:
     """Get matrix connections pool"""
