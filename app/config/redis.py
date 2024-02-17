@@ -3,11 +3,11 @@ from functools import lru_cache
 from config.config import Settings
 from dependencies.config import get_settings
 from fastapi import Depends
-from redis.asyncio import Redis as redis
+from redis.asyncio import Redis as AsyncRedis
 
 
 @lru_cache
-async def get_redis(conf: Settings = Depends(get_settings)) -> redis:
+async def get_redis(conf: Settings = Depends(get_settings)) -> AsyncRedis:
     """Get cached redis connection"""
 
-    return redis.from_url(conf.REDIS_URL, encoding='utf8')
+    return AsyncRedis.from_url(conf.REDIS_URL)
