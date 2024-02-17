@@ -21,3 +21,6 @@ class UserRepo(typing.Protocol):
 
     async def block_user(self, user: User) -> None:
         ...
+
+    async def unblock_user(self, user: User) -> None:
+        ...
