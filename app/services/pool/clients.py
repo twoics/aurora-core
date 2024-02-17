@@ -1,3 +1,5 @@
+from typing import List
+
 from models import User
 from redis.asyncio import Redis as AsyncRedis
 from services.pool.proto import MatrixConnectionsPoolProto
@@ -24,6 +26,12 @@ class MatrixConnectionsPool(MatrixConnectionsPoolProto):
 
         key = await self._get_user_key(user)
         await self._redis.delete(key)
+
+    async def get_all(self) -> List[str]:
+        """Get all users ids from pool"""
+
+        keys = await self._redis.keys('m-clients:*')
+        return await self._redis.mget(keys)
 
     @staticmethod
     async def _get_user_key(user: User) -> str:

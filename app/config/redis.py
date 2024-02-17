@@ -10,4 +10,4 @@ from redis.asyncio import Redis as AsyncRedis
 async def get_redis(conf: Settings = Depends(get_settings)) -> AsyncRedis:
     """Get cached redis connection"""
 
-    return AsyncRedis.from_url(conf.REDIS_URL)
+    return AsyncRedis.from_url(conf.REDIS_URL, decode_responses=True)

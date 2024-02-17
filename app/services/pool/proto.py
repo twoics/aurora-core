@@ -1,3 +1,5 @@
+from typing import List
+
 from models import User
 
 
@@ -10,3 +12,6 @@ class MatrixConnectionsPoolProto:
 
     async def disconnect(self, user):
         """Delete user from pool"""
+
+    async def get_all(self) -> List[str]:
+        """Get all connected-users ids"""
