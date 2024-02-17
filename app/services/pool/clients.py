@@ -38,4 +38,4 @@ class MatrixConnectionsPool(MatrixConnectionsPoolProto):
     async def _get_user_key(user: User, matrix: Matrix) -> str:
         """Generate key for user"""
 
-        return f'm-clients:{str(user.id)}:{str(matrix.id)}'
+        return f'aurora:clients:{str(user.id)}:{str(matrix.id)}'
