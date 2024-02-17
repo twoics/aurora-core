@@ -6,7 +6,7 @@ class User(Document):
     username: Indexed(str, unique=True)
     password: str
     is_admin: bool = False
-    is_banned: bool = False
+    is_block: bool = False
 
     class Settings:
         name = 'user'
