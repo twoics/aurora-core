@@ -34,7 +34,11 @@ async def remote_control(
 ):
     """Matrix Remote control"""
 
-    if not await repo.get_by_uuid(uuid) or not await repo.user_exists(uuid, user):
+    if (
+        not await repo.get_by_uuid(uuid)
+        or not await repo.user_exists(uuid, user)
+        or not user.is_matrices_access
+    ):
         raise WebSocketException(WS_1003_UNSUPPORTED_DATA, 'Unsupported UUID')
 
     await websocket.accept()
