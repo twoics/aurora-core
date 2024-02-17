@@ -19,6 +19,7 @@ from services.delivery.proto import Delivery
 from services.handler.proto import StreamHandler
 from services.pool.proto import MatrixConnectionsPoolProto
 from starlette.status import WS_1003_UNSUPPORTED_DATA
+from starlette.status import WS_1008_POLICY_VIOLATION
 from starlette.websockets import WebSocketDisconnect
 
 router = APIRouter()
@@ -38,7 +39,7 @@ async def validate_client_permissions(websocket, user, matrix, ratelimit, pool) 
 
     await ratelimit(websocket, context_key=f'{user.id}:{matrix.uuid}')
     if not await pool.is_connected(user, matrix):
-        raise WebSocketException(WS_1003_UNSUPPORTED_DATA, 'Haha loh')
+        raise WebSocketException(WS_1008_POLICY_VIOLATION, 'Access denied')
 
 
 @router.websocket('/{uuid}')
