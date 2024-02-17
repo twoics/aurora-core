@@ -47,7 +47,7 @@ async def remote_control(
         except WebSocketDisconnect:
             return
 
-        await ratelimit(websocket, context_key=data)
+        await ratelimit(websocket, context_key=f'{user.id}:{uuid}')
         data_to_send = await handler.handle(data, uuid, user)
         await delivery.send(uuid, data_to_send)
         await websocket.send_text('DONE')
