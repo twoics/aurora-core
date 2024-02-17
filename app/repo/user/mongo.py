@@ -33,16 +33,16 @@ class UserMongoRepository(UserRepo):
     async def block_user(self, user: User) -> None:
         """Block the user so that he cannot connect to matrices"""
 
-        await self._change_block_status(user, blocked=True)
+        await self._update_matrix_access(user, matrix_access=False)
 
     async def unblock_user(self, user: User) -> None:
         """Return user access to connect to matrices"""
 
-        await self._change_block_status(user, blocked=False)
+        await self._update_matrix_access(user, matrix_access=True)
 
     @staticmethod
-    async def _change_block_status(user: User, blocked: bool) -> None:
+    async def _update_matrix_access(user: User, matrix_access: bool) -> None:
         """Set user is_block status"""
 
-        user.is_block = blocked
+        user.is_matrices_access = matrix_access
         await user.save()
