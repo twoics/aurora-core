@@ -1,5 +1,6 @@
 from typing import List
 
+from config.config import Settings
 from models import Matrix
 from models import User
 from redis.asyncio import Redis as AsyncRedis
@@ -7,8 +8,9 @@ from services.pool.proto import MatrixConnectionsPoolProto
 
 
 class MatrixConnectionsPool(MatrixConnectionsPoolProto):
-    def __init__(self, redis: AsyncRedis):
+    def __init__(self, redis: AsyncRedis, conf: Settings):
         self._redis = redis
+        self._prefix = f'{conf.GLOBAL_CASH_KEY_PREFIX}:ws:clients'
 
     async def is_connected(self, user: User, matrix: Matrix) -> bool:
         """Check is user still in the pool"""
@@ -31,11 +33,10 @@ class MatrixConnectionsPool(MatrixConnectionsPoolProto):
     async def get_user_matrices(self, user: User) -> List[str]:
         """Get all matrices ids to which the user is connected"""
 
-        keys = await self._redis.keys(f'm-clients:{str(user.id)}:*')
+        keys = await self._redis.keys(f'{self._prefix}:{str(user.id)}:*')
         return await self._redis.mget(keys)
 
-    @staticmethod
-    async def _get_user_key(user: User, matrix: Matrix) -> str:
+    async def _get_user_key(self, user: User, matrix: Matrix) -> str:
         """Generate key for user"""
 
-        return f'aurora:clients:{str(user.id)}:{str(matrix.id)}'
+        return f'{self._prefix}:{str(user.id)}:{str(matrix.id)}'
