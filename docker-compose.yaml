@@ -25,6 +25,7 @@ services:
       - ./.env
     depends_on:
       - mongo
+      - redis
     restart: unless-stopped
 
   prometheus:
