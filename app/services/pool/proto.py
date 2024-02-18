@@ -4,7 +4,7 @@ from models import Matrix
 from models import User
 
 
-class MatrixConnectionsPoolProto:
+class MatrixConnectionsPool:
     async def is_connected(self, user: User, matrix: Matrix) -> bool:
         """Check is user still in the pool"""
 

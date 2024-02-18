@@ -1,4 +1,4 @@
-from dependencies.repo import user_repo
+from deps.repo import get_user_repo
 from fastapi import Depends
 from fastapi import HTTPException
 from models import User
@@ -7,7 +7,7 @@ from starlette import status
 
 
 async def get_user_by_username(
-    username: str, repo: UserRepo = Depends(user_repo)
+    username: str, repo: UserRepo = Depends(get_user_repo)
 ) -> User:
     """Get user by username variable in path"""
 

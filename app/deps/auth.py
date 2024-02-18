@@ -1,6 +1,6 @@
 from config.config import Settings
-from dependencies.config import get_settings
-from dependencies.repo import user_repo
+from deps.config import get_settings
+from deps.repo import get_user_repo
 from fastapi import Depends
 from fastapi import HTTPException
 from fastapi import WebSocket
@@ -23,7 +23,7 @@ def get_auth_service(conf: Settings = Depends(get_settings)) -> TokenAuth:
 async def get_current_user(
     access_token: str = Depends(oauth2_scheme),
     auth_service: TokenAuth = Depends(get_auth_service),
-    repo: UserRepo = Depends(user_repo),
+    repo: UserRepo = Depends(get_user_repo),
 ) -> User:
     """Validate access token and return user by this token"""
 
@@ -43,7 +43,7 @@ async def get_admin_user(user: User = Depends(get_current_user)) -> User:
 async def get_user_by_ws(
     request: WebSocket,
     auth_service: TokenAuth = Depends(get_auth_service),
-    repo: UserRepo = Depends(user_repo),
+    repo: UserRepo = Depends(get_user_repo),
 ):
     """Get user from token in websocket query params"""
 

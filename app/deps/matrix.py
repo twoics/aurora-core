@@ -1,4 +1,4 @@
-from dependencies.repo import matrix_repo
+from deps.repo import get_matrix_repo
 from fastapi import Depends
 from fastapi import HTTPException
 from models import Matrix
@@ -7,7 +7,7 @@ from starlette import status
 
 
 async def get_matrix_by_uuid(
-    uuid: str, repo: MatrixRepo = Depends(matrix_repo)
+    uuid: str, repo: MatrixRepo = Depends(get_matrix_repo)
 ) -> Matrix:
     """Get user by username variable in path"""
 
