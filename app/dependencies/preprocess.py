@@ -1,5 +1,5 @@
-from services.preprocess.hex_stream import RGBPreprocess
 from services.preprocess.proto import Preprocess
+from services.preprocess.rgb import RGBPreprocess
 
 
 def get_preprocess() -> Preprocess:
