@@ -21,6 +21,7 @@ from models import Matrix
 from models import User
 from repo.matrix.proto import MatrixRepo
 from services.pool.proto import MatrixConnectionsPool
+from starlette import status
 from starlette.responses import Response
 
 router = APIRouter()
@@ -34,7 +35,7 @@ async def create_matrix(
     """Create a new matrix"""
 
     await matrix_repo.create(data)
-    return Response(status_code=201)
+    return Response(status_code=status.HTTP_201_CREATED)
 
 
 @router.put(
@@ -69,7 +70,7 @@ async def add_matrix_user(
     """Add a user to the matrix users"""
 
     await matrix_repo.add_user(uuid, user)
-    return Response(status_code=201)
+    return Response(status_code=status.HTTP_201_CREATED)
 
 
 @router.get('/my', response_model=List[MatrixGet])
@@ -112,7 +113,7 @@ async def remove_matrix_user(
     """Remove a user from the matrix users"""
 
     await matrix_repo.remove_user(uuid, user)
-    return Response(status_code=204)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.post('/{uuid}/{username}/disconnect', dependencies=[Depends(get_admin_user)])
@@ -124,4 +125,4 @@ async def disconnect_user(
     """Disconnect user from current connection"""
 
     await pool.disconnect(user, matrix)
-    return Response(status_code=204)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
