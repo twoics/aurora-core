@@ -28,3 +28,4 @@ async def user_repo() -> UserRepo:
 @pytest_asyncio.fixture()
 async def user(user_repo: UserRepo):
     await user_repo.create_user(UserRegister(username='twoics', password='qwerty'))
+    return await user_repo.get_by_name('twoics')
