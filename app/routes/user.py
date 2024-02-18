@@ -1,10 +1,10 @@
 from typing import List
 
-from dependencies.auth import get_admin_user
-from dependencies.pool import get_matrix_connections_pool
-from dependencies.repo import get_matrix_repo
-from dependencies.repo import get_user_repo
-from dependencies.user import get_user_by_username
+from deps.auth import get_admin_user
+from deps.pool import get_matrix_connections_pool
+from deps.repo import get_matrix_repo
+from deps.repo import get_user_repo
+from deps.user import get_user_by_username
 from dto.matrix import MatrixGet
 from dto.user import UserRegister
 from dto.user import UserUpdate

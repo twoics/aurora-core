@@ -1,4 +1,4 @@
-from dependencies.repo import get_matrix_repo
+from deps.repo import get_matrix_repo
 from fastapi import Depends
 from fastapi import HTTPException
 from models import Matrix

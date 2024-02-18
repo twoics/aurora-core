@@ -1,5 +1,5 @@
-from dependencies.repo import get_matrix_repo
-from dependencies.repo import get_user_repo
+from deps.repo import get_matrix_repo
+from deps.repo import get_user_repo
 from fastapi import Depends
 from fastapi import HTTPException
 from repo.matrix.proto import MatrixRepo

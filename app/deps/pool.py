@@ -1,6 +1,6 @@
 from config.config import Settings
 from config.redis import get_redis
-from dependencies.config import get_settings
+from deps.config import get_settings
 from fastapi import Depends
 from redis.asyncio import Redis as AsyncRedis
 from services.pool.clients import RedisConnectionPool

@@ -2,12 +2,12 @@ from json import JSONDecodeError
 from typing import List
 
 from config.config import Settings
-from dependencies.auth import get_user_by_ws
-from dependencies.config import get_settings
-from dependencies.delivery import get_delivery
-from dependencies.pool import get_matrix_connections_pool
-from dependencies.preprocess import get_preprocess
-from dependencies.repo import get_matrix_repo
+from deps.auth import get_user_by_ws
+from deps.config import get_settings
+from deps.delivery import get_delivery
+from deps.pool import get_matrix_connections_pool
+from deps.preprocess import get_preprocess
+from deps.repo import get_matrix_repo
 from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import Path
