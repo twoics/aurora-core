@@ -48,7 +48,7 @@ async def edit(
 async def block_user(
     user: User = Depends(get_user_by_username), repo: UserRepo = Depends(user_repo)
 ):
-    """Block user access to all matrices"""
+    """Block user access to start connection with all matrices. Even if it is in the matrix group"""
 
     await repo.block_user(user)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -58,7 +58,7 @@ async def block_user(
 async def unblock_user(
     user: User = Depends(get_user_by_username), repo: UserRepo = Depends(user_repo)
 ):
-    """Block user access to all matrices"""
+    """Return the ability to the user to create a connection with matrices"""
 
     await repo.unblock_user(user)
     return Response(status_code=status.HTTP_204_NO_CONTENT)

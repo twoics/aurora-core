@@ -3,6 +3,7 @@ import random
 
 import aiomqtt
 from config.base import init_database
+from config.redis import get_redis
 from dependencies.config import get_settings
 from fastapi import FastAPI
 from fastapi import WebSocketException
@@ -20,6 +21,15 @@ async def websocket_limit_callback(*_):
     """Called when a client sends requests over the limit by websocket"""
 
     raise WebSocketException(WS_1013_TRY_AGAIN_LATER, 'Too Many Requests')
+
+
+async def clear_cache():
+    """Called when app shutdown for clear all application cache"""
+
+    redis = get_redis()
+    conf = get_settings()
+    async for key in redis.scan_iter(f'{conf.GLOBAL_CASH_KEY_PREFIX}:*'):
+        await redis.delete(key)
 
 
 @contextlib.asynccontextmanager
