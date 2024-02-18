@@ -4,10 +4,10 @@ from config.config import Settings
 from models import Matrix
 from models import User
 from redis.asyncio import Redis as AsyncRedis
-from services.pool.proto import MatrixConnectionsPoolProto
+from services.pool.proto import MatrixConnectionsPool
 
 
-class MatrixConnectionsPool(MatrixConnectionsPoolProto):
+class RedisConnectionPool(MatrixConnectionsPool):
     def __init__(self, redis: AsyncRedis, conf: Settings):
         self._redis = redis
         self._prefix = f'{conf.GLOBAL_CASH_KEY_PREFIX}:ws:clients'

@@ -5,8 +5,8 @@ from config.config import Settings
 from dependencies.auth import get_user_by_ws
 from dependencies.config import get_settings
 from dependencies.delivery import get_delivery
-from dependencies.handlers import get_stream_handler
 from dependencies.pool import get_matrix_connections_pool
+from dependencies.preprocess import get_preprocess
 from dependencies.repo import matrix_repo
 from fastapi import APIRouter
 from fastapi import Depends
@@ -17,8 +17,8 @@ from fastapi_limiter.depends import WebSocketRateLimiter
 from models import User
 from repo.matrix.proto import MatrixRepo
 from services.delivery.proto import Delivery
-from services.pool.proto import MatrixConnectionsPoolProto
-from services.preprocess.proto import PreprocessProto
+from services.pool.proto import MatrixConnectionsPool
+from services.preprocess.proto import Preprocess
 from starlette.status import WS_1003_UNSUPPORTED_DATA
 from starlette.status import WS_1008_POLICY_VIOLATION
 from starlette.status import WS_1009_MESSAGE_TOO_BIG
@@ -44,7 +44,7 @@ async def validate_client_permissions(websocket, user, matrix, ratelimit, pool) 
         raise WebSocketException(WS_1008_POLICY_VIOLATION, 'Access denied')
 
 
-async def preprocessing_received_data(handler, data, matrix, user) -> List[int]:
+async def preprocess_received_data(handler, data, matrix, user) -> List[int]:
     """Preprocessing of incoming data, preparing it for sending"""
 
     if not (data_to_send := await handler.handle(data, matrix, user)):
@@ -59,9 +59,9 @@ async def remote_control(
     config: Settings = Depends(get_settings),
     user: User = Depends(get_user_by_ws),
     repo: MatrixRepo = Depends(matrix_repo),
-    handler: PreprocessProto = Depends(get_stream_handler),
+    preprocess: Preprocess = Depends(get_preprocess),
     delivery: Delivery = Depends(get_delivery),
-    pool: MatrixConnectionsPoolProto = Depends(get_matrix_connections_pool),
+    pool: MatrixConnectionsPool = Depends(get_matrix_connections_pool),
 ):
     """Matrix Remote control"""
 
@@ -80,7 +80,7 @@ async def remote_control(
         while True:
             data = await receive(websocket)
             await validate_client_permissions(websocket, user, matrix, ratelimit, pool)
-            ready_data = await preprocessing_received_data(handler, data, matrix, user)
+            ready_data = await preprocess_received_data(preprocess, data, matrix, user)
             await delivery.send(uuid, ready_data)
             await websocket.send_text('DONE')
 

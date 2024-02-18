@@ -3,10 +3,10 @@ from typing import Tuple
 
 from models import Matrix
 from models import User
-from services.preprocess.proto import PreprocessProto
+from services.preprocess.proto import Preprocess
 
 
-class Preprocess(PreprocessProto):
+class RGBPreprocess(Preprocess):
     @staticmethod
     def to_rgb(hex_color: str) -> Tuple[int, int, int]:
         """Converts a hex color to an RGB tuple"""

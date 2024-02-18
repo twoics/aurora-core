@@ -16,7 +16,7 @@ from fastapi import Path
 from models import User
 from repo.matrix.proto import MatrixRepo
 from repo.user.proto import UserRepo
-from services.pool.proto import MatrixConnectionsPoolProto
+from services.pool.proto import MatrixConnectionsPool
 from starlette import status
 from starlette.responses import Response
 
@@ -80,7 +80,7 @@ async def unblock_user(
 async def get_connections(
     user: User = Depends(get_user_by_username),
     repo: MatrixRepo = Depends(matrix_repo),
-    pool: MatrixConnectionsPoolProto = Depends(get_matrix_connections_pool),
+    pool: MatrixConnectionsPool = Depends(get_matrix_connections_pool),
 ):
     """Return current user's matrix connections"""
 

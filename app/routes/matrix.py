@@ -20,7 +20,7 @@ from fastapi import Path
 from models import Matrix
 from models import User
 from repo.matrix.proto import MatrixRepo
-from services.pool.proto import MatrixConnectionsPoolProto
+from services.pool.proto import MatrixConnectionsPool
 from starlette.responses import Response
 
 router = APIRouter()
@@ -118,7 +118,7 @@ async def remove_matrix_user(
 async def disconnect_user(
     user: User = Depends(get_user_by_username),
     matrix: Matrix = Depends(get_matrix_by_uuid),
-    pool: MatrixConnectionsPoolProto = Depends(get_matrix_connections_pool),
+    pool: MatrixConnectionsPool = Depends(get_matrix_connections_pool),
 ):
     """Disconnect user from current connection"""
 
