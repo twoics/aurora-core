@@ -11,6 +11,8 @@ class Matrix(Document):
     name: str
     is_active: bool = True
     users: List[Link[User]]
+    height: int = 16
+    width: int = 16
 
     class Settings:
         name = 'matrix'
