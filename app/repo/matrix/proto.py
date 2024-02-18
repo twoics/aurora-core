@@ -24,6 +24,9 @@ class MatrixRepo(typing.Protocol):
     async def get_by_uuid(self, matrix_uuid: str) -> Matrix | None:
         ...
 
+    async def get_many(self, matrix_uuids: typing.List[str]) -> typing.List[Matrix]:
+        ...
+
     async def detail_by_uuid(self, matrix_uuid: str) -> MatrixDetailGet | None:
         ...
 

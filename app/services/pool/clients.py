@@ -22,7 +22,7 @@ class MatrixConnectionsPool(MatrixConnectionsPoolProto):
         """Add a new matrix-client connection into pool"""
 
         key = await self._get_user_key(user, matrix)
-        await self._redis.set(name=key, value=str(matrix.id))
+        await self._redis.set(name=key, value=matrix.uuid)
 
     async def disconnect(self, user: User, matrix: Matrix):
         """Delete user from pool"""
@@ -30,8 +30,8 @@ class MatrixConnectionsPool(MatrixConnectionsPoolProto):
         key = await self._get_user_key(user, matrix)
         await self._redis.delete(key)
 
-    async def get_user_matrices(self, user: User) -> List[str]:
-        """Get all matrices ids to which the user is connected"""
+    async def get_connected_matrices_uuid_by(self, user: User) -> List[str]:
+        """Get all matrices uuids to which the user is connected"""
 
         keys = await self._redis.keys(f'{self._prefix}:{str(user.id)}:*')
         return await self._redis.mget(keys)
