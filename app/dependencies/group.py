@@ -25,13 +25,6 @@ async def matrix_uuid_exist(uuid: str, repo: MatrixRepo = Depends(matrix_repo)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
 
-async def username_is_exist(username: str, repo: UserRepo = Depends(user_repo)):
-    """Validate that user with username exist"""
-
-    if not await repo.get_by_name(username):
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-
-
 async def user_in_group(exists: bool = Depends(_user_in_matrix_group)):
     """Validate if user in matrix group"""
 
