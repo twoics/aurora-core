@@ -7,9 +7,18 @@ from pydantic import BaseModel
 class MatrixCreate(BaseModel):
     uuid: str
     name: str
+    width: int = 16
+    height: int = 16
 
     class Config:
-        json_schema_extra = {'example': {'uuid': '0SN91roa6', 'name': 'first-matrix'}}
+        json_schema_extra = {
+            'example': {
+                'uuid': '0SN91roa6',
+                'name': 'aurora',
+                'width': 16,
+                'height': 16,
+            }
+        }
 
 
 class MatrixUpdate(MatrixCreate):
@@ -19,21 +28,34 @@ class MatrixUpdate(MatrixCreate):
 class MatrixGet(BaseModel):
     uuid: str
     name: str
+    width: int
+    height: int
 
     class Config:
-        json_schema_extra = {'example': {'uuid': '0SN91roa6', 'name': 'aurora'}}
+        json_schema_extra = {
+            'example': {
+                'uuid': '0SN91roa6',
+                'name': 'aurora',
+                'width': 16,
+                'height': 16,
+            }
+        }
 
 
 class MatrixDetailGet(BaseModel):
     uuid: str
     name: str
+    width: int
+    height: int
     users: List[UserRead]
 
     class Config:
         json_schema_extra = {
             'example': {
                 'uuid': '0SN91roa6',
-                'name': 'first-matrix',
+                'name': 'aurora',
+                'width': 16,
+                'height': 16,
                 'users': [
                     {
                         'username': 'twoics',

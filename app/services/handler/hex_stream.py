@@ -1,6 +1,7 @@
 from typing import List
 from typing import Tuple
 
+from models import Matrix
 from models import User
 from services.handler.proto import StreamHandler
 
@@ -12,10 +13,13 @@ class HexHandler(StreamHandler):
 
         return tuple(int(hex_color[i : i + 2], 16) for i in (0, 2, 4))  # noqa
 
-    async def handle(self, data, uuid: str, user: User) -> List[int] | None:
+    async def handle(self, data, matrix: Matrix, user: User) -> List[int] | None:
         """Handle incoming messages and convert them to send on matrix"""
 
         try:
+            if len(data) > matrix.resolution:
+                return None
+
             return [i_rgb for hex_val in data for i_rgb in self.to_rgb(hex_val)]
         except (ValueError, TypeError):
             return None

@@ -1,4 +1,5 @@
 from json import JSONDecodeError
+from typing import List
 
 from config.config import Settings
 from dependencies.auth import get_user_by_ws
@@ -20,6 +21,7 @@ from services.handler.proto import StreamHandler
 from services.pool.proto import MatrixConnectionsPoolProto
 from starlette.status import WS_1003_UNSUPPORTED_DATA
 from starlette.status import WS_1008_POLICY_VIOLATION
+from starlette.status import WS_1009_MESSAGE_TOO_BIG
 from starlette.websockets import WebSocketDisconnect
 
 router = APIRouter()
@@ -40,6 +42,14 @@ async def validate_client_permissions(websocket, user, matrix, ratelimit, pool) 
     await ratelimit(websocket, context_key=f'{user.id}:{matrix.uuid}')
     if not await pool.is_connected(user, matrix):
         raise WebSocketException(WS_1008_POLICY_VIOLATION, 'Access denied')
+
+
+async def preprocessing_received_data(handler, data, matrix, user) -> List[int]:
+    """Preprocessing of incoming data, preparing it for sending"""
+
+    if not (data_to_send := await handler.handle(data, matrix, user)):
+        raise WebSocketException(WS_1009_MESSAGE_TOO_BIG, 'Big message')
+    return data_to_send
 
 
 @router.websocket('/{uuid}')
@@ -70,8 +80,8 @@ async def remote_control(
         while True:
             data = await receive(websocket)
             await validate_client_permissions(websocket, user, matrix, ratelimit, pool)
-            data_to_send = await handler.handle(data, uuid, user)
-            await delivery.send(uuid, data_to_send)
+            ready_data = await preprocessing_received_data(handler, data, matrix, user)
+            await delivery.send(uuid, ready_data)
             await websocket.send_text('DONE')
 
     except WebSocketDisconnect:
