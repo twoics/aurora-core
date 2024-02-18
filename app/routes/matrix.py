@@ -5,11 +5,9 @@ from dependencies.auth import get_current_user
 from dependencies.group import matrix_uuid_exist
 from dependencies.group import user_in_group
 from dependencies.group import user_not_in_group
-from dependencies.group import username_is_exist
 from dependencies.matrix import get_matrix_by_uuid
 from dependencies.pool import get_matrix_connections_pool
 from dependencies.repo import matrix_repo
-from dependencies.repo import user_repo
 from dependencies.user import get_user_by_username
 from dto.matrix import MatrixCreate
 from dto.matrix import MatrixDetailGet
@@ -22,7 +20,6 @@ from fastapi import Path
 from models import Matrix
 from models import User
 from repo.matrix.proto import MatrixRepo
-from repo.user.proto import UserRepo
 from services.pool.proto import MatrixConnectionsPoolProto
 from starlette.responses import Response
 
@@ -61,19 +58,17 @@ async def update_matrix(
     dependencies=[
         Depends(get_admin_user),
         Depends(matrix_uuid_exist),
-        Depends(username_is_exist),
         Depends(user_not_in_group),
     ],
 )
 async def add_matrix_user(
     uuid: str = Path(),
-    username: str = Path(),
+    user: User = Depends(get_user_by_username),
     m_repo: MatrixRepo = Depends(matrix_repo),
-    u_repo: UserRepo = Depends(user_repo),
 ):
     """Add a user to the matrix users"""
 
-    await m_repo.add_user(uuid, await u_repo.get_by_name(username))
+    await m_repo.add_user(uuid, user)
     return Response(status_code=201)
 
 
@@ -105,19 +100,17 @@ async def get_matrix(
     dependencies=[
         Depends(get_admin_user),
         Depends(matrix_uuid_exist),
-        Depends(username_is_exist),
         Depends(user_in_group),
     ],
 )
 async def remove_matrix_user(
     uuid: str = Path(),
-    username: str = Path(),
+    user: User = Depends(get_user_by_username),
     m_repo: MatrixRepo = Depends(matrix_repo),
-    u_repo: UserRepo = Depends(user_repo),
 ):
     """Remove a user from the matrix users"""
 
-    await m_repo.remove_user(uuid, await u_repo.get_by_name(username))
+    await m_repo.remove_user(uuid, user)
     return Response(status_code=204)
 
 
