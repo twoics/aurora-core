@@ -7,7 +7,7 @@ from dependencies.config import get_settings
 from dependencies.delivery import get_delivery
 from dependencies.pool import get_matrix_connections_pool
 from dependencies.preprocess import get_preprocess
-from dependencies.repo import matrix_repo
+from dependencies.repo import get_matrix_repo
 from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import Path
@@ -58,7 +58,7 @@ async def remote_control(
     uuid: str = Path(...),
     config: Settings = Depends(get_settings),
     user: User = Depends(get_user_by_ws),
-    repo: MatrixRepo = Depends(matrix_repo),
+    matrix_repo: MatrixRepo = Depends(get_matrix_repo),
     preprocess: Preprocess = Depends(get_preprocess),
     delivery: Delivery = Depends(get_delivery),
     pool: MatrixConnectionsPool = Depends(get_matrix_connections_pool),
@@ -66,8 +66,8 @@ async def remote_control(
     """Matrix Remote control"""
 
     if (
-        not (matrix := await repo.get_by_uuid(uuid))
-        or not await repo.user_exists(uuid, user)
+        not (matrix := await matrix_repo.get_by_uuid(uuid))
+        or not await matrix_repo.user_exists(uuid, user)
         or not user.is_matrices_access
     ):
         raise WebSocketException(WS_1003_UNSUPPORTED_DATA, 'Unsupported UUID')

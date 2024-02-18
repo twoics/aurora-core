@@ -1,6 +1,6 @@
 from dependencies.auth import get_auth_service
 from dependencies.auth import get_current_user
-from dependencies.repo import user_repo
+from dependencies.repo import get_user_repo
 from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import HTTPException
@@ -18,11 +18,11 @@ router = APIRouter()
 async def login(
     form_data: OAuthForm = Depends(OAuthForm),
     auth_service: TokenAuth = Depends(get_auth_service),
-    repo: UserRepo = Depends(user_repo),
+    user_repo: UserRepo = Depends(get_user_repo),
 ):
     """Login user by username and password"""
 
-    exist_user = await repo.get_by_name(form_data.username)
+    exist_user = await user_repo.get_by_name(form_data.username)
     if not exist_user or not verify_password(exist_user, form_data.password):
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail='Wrong credentials')
 
