@@ -1,8 +1,8 @@
-from services.handler.hex_stream import HexHandler
-from services.handler.proto import StreamHandler
+from services.preprocess.hex_stream import Preprocess
+from services.preprocess.proto import PreprocessProto
 
 
-def get_stream_handler() -> StreamHandler:
-    """Get stream handler which handle incoming ws messages"""
+def get_stream_handler() -> PreprocessProto:
+    """Get stream preprocess which handle incoming ws messages"""
 
-    return HexHandler()
+    return Preprocess()

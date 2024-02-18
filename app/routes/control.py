@@ -17,8 +17,8 @@ from fastapi_limiter.depends import WebSocketRateLimiter
 from models import User
 from repo.matrix.proto import MatrixRepo
 from services.delivery.proto import Delivery
-from services.handler.proto import StreamHandler
 from services.pool.proto import MatrixConnectionsPoolProto
+from services.preprocess.proto import PreprocessProto
 from starlette.status import WS_1003_UNSUPPORTED_DATA
 from starlette.status import WS_1008_POLICY_VIOLATION
 from starlette.status import WS_1009_MESSAGE_TOO_BIG
@@ -59,7 +59,7 @@ async def remote_control(
     config: Settings = Depends(get_settings),
     user: User = Depends(get_user_by_ws),
     repo: MatrixRepo = Depends(matrix_repo),
-    handler: StreamHandler = Depends(get_stream_handler),
+    handler: PreprocessProto = Depends(get_stream_handler),
     delivery: Delivery = Depends(get_delivery),
     pool: MatrixConnectionsPoolProto = Depends(get_matrix_connections_pool),
 ):

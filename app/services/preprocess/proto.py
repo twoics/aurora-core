@@ -5,6 +5,6 @@ from models import User
 
 
 @typing.runtime_checkable
-class StreamHandler(typing.Protocol):
+class PreprocessProto(typing.Protocol):
     async def handle(self, data, matrix: Matrix, user: User) -> typing.List[int] | None:
-        ...
+        """Process an incoming message and prepare it for sending to the matrix"""

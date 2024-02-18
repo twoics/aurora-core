@@ -24,7 +24,7 @@ class TokenAuth:
         self._conf = conf
 
     async def decode_token(self, token) -> TokenClaims | None:
-        """Return claims of this token if token handler else None"""
+        """Return claims of this token if token preprocess else None"""
 
         try:
             return jwt.decode(
@@ -34,7 +34,7 @@ class TokenAuth:
             return None
 
     async def can_renew_tokens(self, access_token: str, refresh_token: str) -> bool:
-        """Check access token and refresh are handler"""
+        """Check access token and refresh are preprocess"""
 
         claims = await self.decode_token(refresh_token)
         return claims and claims.get('access_token') == access_token
