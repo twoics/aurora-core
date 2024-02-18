@@ -70,7 +70,7 @@ async def remote_control(
         while True:
             data = await receive(websocket)
             await validate_client_permissions(websocket, user, matrix, ratelimit, pool)
-            data_to_send = await handler.handle(data, uuid, user)
+            data_to_send = await handler.handle(data, matrix, user)
             await delivery.send(uuid, data_to_send)
             await websocket.send_text('DONE')
 
