@@ -22,7 +22,7 @@ class UserLogin(BaseModel):
         json_schema_extra = {
             'example': {
                 'username': 'twoics',
-                'password': 'hello world',
+                'password': 'qwerty',
             }
         }
 
