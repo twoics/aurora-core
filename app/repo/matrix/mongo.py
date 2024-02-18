@@ -1,5 +1,6 @@
 import typing
 
+from beanie.odm.operators.find.comparison import In
 from beanie.odm.operators.update.array import Pull
 from beanie.odm.operators.update.array import Push
 from beanie.odm.operators.update.general import Set
@@ -14,6 +15,9 @@ from repo.matrix.proto import MatrixRepo
 class MatrixMongoRepository(MatrixRepo):
     async def get_by_uuid(self, matrix_uuid: str) -> Matrix | None:
         return await Matrix.find_one(Matrix.uuid == matrix_uuid)
+
+    async def get_many(self, matrix_uuids: typing.List[str]) -> typing.List[Matrix]:
+        return await Matrix.find(In(Matrix.uuid, matrix_uuids)).to_list()
 
     async def detail_by_uuid(self, matrix_uuid: str) -> MatrixDetailGet | None:
         return (
