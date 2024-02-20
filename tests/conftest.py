@@ -14,7 +14,6 @@ from repo.matrix.mongo import MatrixMongoRepository
 from repo.matrix.proto import MatrixRepo
 from repo.user.mongo import UserMongoRepository
 from repo.user.proto import UserRepo
-from utils.create_admin import create_admin
 
 
 @pytest_asyncio.fixture(autouse=True)
@@ -62,7 +61,8 @@ async def created_user(user_repo: UserRepo) -> User:
 async def admin_user(user_repo: UserRepo) -> User:
     """Get admin"""
 
-    await create_admin('admin', 'admin')
+    admin = User(username='admin', password='admin', is_admin=True)
+    await admin.insert()
     return await user_repo.get_by_name('admin')
 
 
@@ -73,6 +73,12 @@ async def async_client() -> AsyncClient:
 
 
 @pytest_asyncio.fixture()
-async def access_token(created_user) -> str:
+async def user_access_token(created_user) -> str:
     auth_serv = get_auth_service(get_settings())
     return (await auth_serv.generate_tokens(created_user))['access_token']  # noqa
+
+
+@pytest_asyncio.fixture()
+async def admin_access_token(admin_user) -> str:
+    auth_serv = get_auth_service(get_settings())
+    return (await auth_serv.generate_tokens(admin_user))['access_token']  # noqa
