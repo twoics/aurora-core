@@ -7,7 +7,7 @@ from models import User
 from repo.matrix.proto import MatrixRepo
 
 
-class TestMatrixCRUD:
+class TestMatrixRepo:
     @pytest.mark.parametrize(
         'data',
         [
