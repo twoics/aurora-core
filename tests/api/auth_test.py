@@ -12,5 +12,4 @@ class TestAuth:
         )
 
         assert response.status_code == 200
-        assert response.json().get('access_token')
-        assert response.json().get('refresh_token')
+        assert 'access_token' in response.json() and 'refresh_token' in response.json()
