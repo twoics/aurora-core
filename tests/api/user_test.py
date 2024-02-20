@@ -25,7 +25,7 @@ class TestUserAPI:
         )
 
         assert response.status_code == 201
-        assert bool(await user_repo.get_by_name(request_data['username']))
+        assert await user_repo.get_by_name(request_data['username'])
 
     @pytest.mark.parametrize('request_data', [({'username': 'Admin 2'})])
     @pytest.mark.asyncio
@@ -45,7 +45,7 @@ class TestUserAPI:
             },
         )
         assert response.status_code == 200
-        assert bool(await user_repo.get_by_name(request_data['username']))
+        assert await user_repo.get_by_name(request_data['username'])
 
     @pytest.mark.asyncio
     async def test_user_update_duplicate(

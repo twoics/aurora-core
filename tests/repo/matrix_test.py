@@ -18,7 +18,7 @@ class TestMatrixRepo:
     @pytest.mark.asyncio
     async def test_create(self, data, matrix_repo: MatrixRepo):
         await matrix_repo.create(data)
-        assert bool(await matrix_repo.get_by_uuid(data.uuid))
+        assert await matrix_repo.get_by_uuid(data.uuid)
 
     @pytest.mark.parametrize(
         'data',
@@ -52,29 +52,27 @@ class TestMatrixRepo:
     async def test_user_doesnt_exist(
         self, created_matrix: Matrix, matrix_repo: MatrixRepo, created_user: User
     ):
-        assert not bool(
-            await matrix_repo.user_exists(created_matrix.uuid, created_user)
-        )
+        assert not await matrix_repo.user_exists(created_matrix.uuid, created_user)
 
     @pytest.mark.asyncio
     async def test_add_user_to_matrix(
         self, created_matrix: Matrix, matrix_repo: MatrixRepo, created_user: User
     ):
         await matrix_repo.add_user(created_matrix.uuid, created_user)
-        assert bool(await matrix_repo.user_exists(created_matrix.uuid, created_user))
+        assert await matrix_repo.user_exists(created_matrix.uuid, created_user)
 
     @pytest.mark.asyncio
     async def test_user_matrices_doesnt_exist(
         self, matrix_repo: MatrixRepo, created_user: User
     ):
-        assert not bool(await matrix_repo.user_matrices(created_user))
+        assert not await matrix_repo.user_matrices(created_user)
 
     @pytest.mark.asyncio
     async def test_get_user_matrices(
         self, created_matrix: Matrix, matrix_repo: MatrixRepo, created_user: User
     ):
         await matrix_repo.add_user(created_matrix.uuid, created_user)
-        assert bool(await matrix_repo.user_matrices(created_user))
+        assert await matrix_repo.user_matrices(created_user)
 
     @pytest.mark.asyncio
     async def test_remove_user(
@@ -82,4 +80,4 @@ class TestMatrixRepo:
     ):
         await matrix_repo.add_user(created_matrix.uuid, created_user)
         await matrix_repo.remove_user(created_matrix.uuid, created_user)
-        assert not bool(await matrix_repo.user_matrices(created_user))
+        assert not await matrix_repo.user_matrices(created_user)
