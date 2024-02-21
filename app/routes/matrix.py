@@ -1,3 +1,4 @@
+from functools import wraps
 from typing import List
 
 from deps.auth import get_admin_user
@@ -16,6 +17,7 @@ from dto.matrix import MatrixUpdate
 from fastapi import APIRouter
 from fastapi import Body
 from fastapi import Depends
+from fastapi import HTTPException
 from fastapi import Path
 from models import Matrix
 from models import User
@@ -27,7 +29,24 @@ from starlette.responses import Response
 router = APIRouter()
 
 
+def matrix_not_exists(endpoint):
+    """Decorator for check that matrix with given uuid for create/update already exists"""
+
+    @wraps(endpoint)
+    async def wrapped_endpoint(**kwargs):
+        matrix_repo, uuid = kwargs['matrix_repo'], kwargs['data'].uuid
+        matrix_exists = await matrix_repo.get_by_uuid(uuid)
+        if matrix_exists:
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST, detail='Matrix already exists'
+            )
+        return await endpoint(**kwargs)
+
+    return wrapped_endpoint
+
+
 @router.post('/', dependencies=[Depends(get_admin_user)])
+@matrix_not_exists
 async def create_matrix(
     data: MatrixCreate = Body(),
     matrix_repo: MatrixRepo = Depends(get_matrix_repo),
@@ -43,6 +62,7 @@ async def create_matrix(
     dependencies=[Depends(get_admin_user), Depends(matrix_uuid_exist)],
     response_model=MatrixDetailGet,
 )
+@matrix_not_exists
 async def update_matrix(
     uuid: str = Path(),
     data: MatrixUpdate = Body(),

@@ -1,3 +1,4 @@
+from functools import wraps
 from typing import List
 
 from deps.auth import get_admin_user
@@ -23,16 +24,29 @@ from starlette.responses import Response
 router = APIRouter()
 
 
+def user_not_exists(endpoint):
+    """Decorator for check that user with given username for create/update already exists"""
+
+    @wraps(endpoint)
+    async def wrapped_endpoint(**kwargs):
+        user_repo, user = kwargs['user_repo'], kwargs['user']
+        exist_user = await user_repo.get_by_name(user.username)
+        if exist_user:
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST, detail='User already exists'
+            )
+        return await endpoint(**kwargs)
+
+    return wrapped_endpoint
+
+
 @router.post('/register', dependencies=[Depends(get_admin_user)])
+@user_not_exists
 async def register(
     user: UserRegister = Body(...),
     user_repo: UserRepo = Depends(get_user_repo),
 ):
     """Register user by username and password"""
-
-    exist_user = await user_repo.get_by_name(user.username)
-    if exist_user:
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail='User already exists')
 
     await user_repo.create_user(UserRegister(**user.dict()))
     return Response(status_code=status.HTTP_201_CREATED)
@@ -41,6 +55,7 @@ async def register(
 @router.put(
     '/{username}', dependencies=[Depends(get_admin_user)], response_model=UserUpdate
 )
+@user_not_exists
 async def edit(
     username: str = Path(),
     user: UserUpdate = Body(),
