@@ -6,7 +6,7 @@ from repo.matrix.proto import MatrixRepo
 
 
 @pytest.mark.parametrize('data', [({'uuid': 'uuid', 'name': 'name'})])
-class TestMatrixCrud:
+class TestMatrixCRUD:
     @pytest.mark.asyncio
     async def test_create(
         self,
