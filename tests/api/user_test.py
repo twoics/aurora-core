@@ -4,7 +4,7 @@ from models import User
 from repo.user.proto import UserRepo
 
 
-class TestUserAPI:
+class TestUserCRUD:
     @pytest.mark.parametrize(
         'request_data', [({'username': 'New user', 'password': 'qwerty'})]
     )
@@ -47,6 +47,8 @@ class TestUserAPI:
         assert response.status_code == 200
         assert await user_repo.get_by_name(request_data['username'])
 
+
+class TestUserDuplicate:
     @pytest.mark.asyncio
     async def test_user_update_duplicate(
         self,
@@ -81,6 +83,8 @@ class TestUserAPI:
         )
         assert response.status_code == 400
 
+
+class TestUserBlock:
     @pytest.mark.asyncio
     async def test_user_block(
         self,
