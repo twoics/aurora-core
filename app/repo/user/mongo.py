@@ -1,3 +1,5 @@
+import uuid
+
 from beanie.odm.operators.update.general import Set
 from bson import ObjectId
 from dto.user import UserRegister
@@ -10,6 +12,11 @@ from utils.hashing import generate_hash
 class UserMongoRepository(UserRepo):
     async def get_by_name(self, username: str) -> User | None:
         return await User.find_one(User.username == username)
+
+    async def renew_access_key(self, user: User) -> str:
+        access_key = uuid.uuid4().hex
+        await user.update(Set({User.access_key: generate_hash(access_key)}))
+        return access_key
 
     async def create_user(self, user: UserRegister) -> None:
         data = user.model_dump()

@@ -24,3 +24,6 @@ class UserRepo(typing.Protocol):
 
     async def unblock_user(self, user: User) -> None:
         """Return user access to connect to matrices"""
+
+    async def renew_access_key(self, user: User) -> str:
+        """Return user access key to connect to matrices"""
