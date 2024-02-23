@@ -4,7 +4,7 @@ from dto.user import UserRegister
 from dto.user import UserUpdate
 from models import User
 from repo.user.proto import UserRepo
-from services.auth.credentials import get_password_hash
+from utils.hashing import generate_hash
 
 
 class UserMongoRepository(UserRepo):
@@ -13,7 +13,7 @@ class UserMongoRepository(UserRepo):
 
     async def create_user(self, user: UserRegister) -> None:
         data = user.model_dump()
-        data['password'] = get_password_hash(data['password'])
+        data['password'] = generate_hash(data['password'])
         await User(**data).insert()
 
     async def update_user(self, username: str, user: UserUpdate) -> None:

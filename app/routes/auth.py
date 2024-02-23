@@ -7,9 +7,9 @@ from fastapi import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm as OAuthForm
 from models import User
 from repo.user.proto import UserRepo
-from services.auth.credentials import verify_password
 from services.auth.tokens import TokenAuth
 from starlette import status
+from utils.hashing import verify
 
 router = APIRouter()
 
@@ -23,7 +23,7 @@ async def login(
     """Login user by username and password"""
 
     exist_user = await user_repo.get_by_name(form_data.username)
-    if not exist_user or not verify_password(exist_user, form_data.password):
+    if not exist_user or not verify(exist_user.password, form_data.password):
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail='Wrong credentials')
 
     return {**await auth_service.generate_tokens(exist_user)}
