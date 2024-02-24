@@ -16,16 +16,16 @@ class UserRepo(typing.Protocol):
     async def get_by_access_key(self, access_key: str) -> User | None:
         """Get user by access_key"""
 
-    async def create_user(self, user: UserRegister) -> None:
+    async def create(self, user: UserRegister) -> None:
         """Create user and hash his password"""
 
-    async def update_user(self, username: str, user: UserUpdate) -> None:
+    async def update(self, username: str, user: UserUpdate) -> None:
         """Update user with given username and set UserUpdate data"""
 
-    async def block_user(self, user: User) -> None:
+    async def block(self, user: User) -> None:
         """Block the user so that he cannot connect to matrices"""
 
-    async def unblock_user(self, user: User) -> None:
+    async def unblock(self, user: User) -> None:
         """Return user access to connect to matrices"""
 
     async def renew_access_key(self, user: User) -> str:

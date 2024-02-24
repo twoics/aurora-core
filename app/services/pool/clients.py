@@ -24,7 +24,7 @@ class RedisConnectionPool(MatrixConnectionsPool):
         key = await self._get_user_key(user, matrix)
         await self._redis.delete(key)
 
-    async def get_connected_matrices_uuid_by(self, user: User) -> List[str]:
+    async def get_user_controlled_matrices(self, user: User) -> List[str]:
         keys = await self._redis.keys(f'{self._prefix}:{str(user.id)}:*')
         return await self._redis.mget(keys)
 
