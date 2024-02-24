@@ -1,3 +1,5 @@
+import logging
+
 from deps.repo import get_matrix_repo
 from deps.repo import get_user_repo
 from fastapi import Depends
@@ -5,6 +7,8 @@ from fastapi import HTTPException
 from repo.matrix.proto import MatrixRepo
 from repo.user.proto import UserRepo
 from starlette import status
+
+logger = logging.getLogger(__name__)
 
 
 async def _user_in_matrix_group(
@@ -15,7 +19,9 @@ async def _user_in_matrix_group(
 ) -> bool:
     """Checks if a user in a matrix group"""
 
-    return await m_repo.user_exists(uuid, await u_repo.get_by_name(username))
+    exist = await m_repo.user_exists(uuid, await u_repo.get_by_name(username))
+    logger.info(f'User exists in matrix group: {exist}')
+    return exist
 
 
 async def matrix_uuid_exist(uuid: str, repo: MatrixRepo = Depends(get_matrix_repo)):
