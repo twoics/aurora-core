@@ -53,7 +53,7 @@ async def created_matrix(matrix_repo: MatrixRepo) -> Matrix:
 async def created_user(user_repo: UserRepo) -> User:
     """Get simple client"""
 
-    await user_repo.create_user(UserRegister(username='twoics', password='qwerty'))
+    await user_repo.create(UserRegister(username='twoics', password='qwerty'))
     return await user_repo.get_by_name('twoics')
 
 
@@ -75,10 +75,10 @@ async def async_client() -> AsyncClient:
 @pytest_asyncio.fixture()
 async def user_access_token(created_user) -> str:
     auth_serv = get_auth_service(get_settings())
-    return (await auth_serv.generate_tokens(created_user))['access_token']  # noqa
+    return (await auth_serv.generate(created_user))['access_token']  # noqa
 
 
 @pytest_asyncio.fixture()
 async def admin_access_token(admin_user) -> str:
     auth_serv = get_auth_service(get_settings())
-    return (await auth_serv.generate_tokens(admin_user))['access_token']  # noqa
+    return (await auth_serv.generate(admin_user))['access_token']  # noqa

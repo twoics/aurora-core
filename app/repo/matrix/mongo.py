@@ -41,7 +41,7 @@ class MatrixMongoRepository(MatrixRepo):
     async def create(self, matrix: MatrixCreate) -> None:
         await Matrix(**matrix.model_dump(), users=[]).insert()
 
-    async def update_matrix(self, matrix_uuid: str, matrix: MatrixUpdate) -> None:
+    async def update(self, matrix_uuid: str, matrix: MatrixUpdate) -> None:
         await (await self.get_by_uuid(matrix_uuid)).update(Set(matrix.model_dump()))
 
     async def add_user(self, matrix_uuid: str, user: User) -> None:

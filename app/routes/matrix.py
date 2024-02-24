@@ -73,7 +73,7 @@ async def update_matrix(
 ):
     """Update an existing matrix"""
 
-    await matrix_repo.update_matrix(uuid, data)
+    await matrix_repo.update(uuid, data)
     return await matrix_repo.get_by_uuid(data.uuid)
 
 

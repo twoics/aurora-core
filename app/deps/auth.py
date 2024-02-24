@@ -30,7 +30,7 @@ async def get_current_user(
 ) -> User:
     """Validate access token and return user by this token"""
 
-    if not (claims := await auth_service.decode_token(access_token)):
+    if not (claims := await auth_service.decode(access_token)):
         logger.info('Unable to decode token and get claims')
         raise HTTPException(status.HTTP_403_FORBIDDEN, detail='Access denied')
     return await repo.get_by_id(claims['sub'])
