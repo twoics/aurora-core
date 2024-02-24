@@ -29,7 +29,7 @@ class TestMatrixRepo:
     )
     @pytest.mark.asyncio
     async def test_update(self, created_matrix: Matrix, matrix_repo: MatrixRepo, data):
-        await matrix_repo.update_matrix(created_matrix.uuid, data)
+        await matrix_repo.update(created_matrix.uuid, data)
         matrix = await matrix_repo.get_by_uuid(data.uuid)
         assert matrix.height == data.height and matrix.width == data.width
         assert matrix.name == data.name
@@ -46,7 +46,7 @@ class TestMatrixRepo:
     ):
         await matrix_repo.create(data)
         with pytest.raises(RevisionIdWasChanged):
-            await matrix_repo.update_matrix(created_matrix.uuid, data)
+            await matrix_repo.update(created_matrix.uuid, data)
 
 
 class TestMatrixUser:

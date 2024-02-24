@@ -50,7 +50,7 @@ async def register(
 ):
     """Register user by username and password"""
 
-    await user_repo.create_user(UserRegister(**user.dict()))
+    await user_repo.create(UserRegister(**user.dict()))
     return Response(status_code=status.HTTP_201_CREATED)
 
 
@@ -75,7 +75,7 @@ async def edit(
 ):
     """Edit user info"""
 
-    await user_repo.update_user(username, user)
+    await user_repo.update(username, user)
     return await user_repo.get_by_name(user.username)
 
 
@@ -86,7 +86,7 @@ async def block_user(
 ):
     """Block user access to start connection with all matrices. Even if it is in the matrix group"""
 
-    await user_repo.block_user(user)
+    await user_repo.block(user)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
@@ -97,7 +97,7 @@ async def unblock_user(
 ):
     """Return the ability to the user to create a connection with matrices"""
 
-    await user_repo.unblock_user(user)
+    await user_repo.unblock(user)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
@@ -113,5 +113,5 @@ async def get_connections(
 ):
     """Return current user's matrix connections"""
 
-    connected_matrices = await pool.get_connected_matrices_uuid_by(user)
+    connected_matrices = await pool.get_user_controlled_matrices(user)
     return await matrix_repo.get_many(connected_matrices)

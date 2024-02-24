@@ -23,7 +23,7 @@ class TokenAuth:
     def __init__(self, conf: Settings):
         self._conf = conf
 
-    async def decode_token(self, token) -> TokenClaims | None:
+    async def decode(self, token) -> TokenClaims | None:
         """Return claims of this token if token preprocess else None"""
 
         try:
@@ -33,13 +33,13 @@ class TokenAuth:
         except JWTError:
             return None
 
-    async def can_renew_tokens(self, access_token: str, refresh_token: str) -> bool:
+    async def can_renew(self, access_token: str, refresh_token: str) -> bool:
         """Check access token and refresh are preprocess"""
 
-        claims = await self.decode_token(refresh_token)
+        claims = await self.decode(refresh_token)
         return claims and claims.get('access_token') == access_token
 
-    async def generate_tokens(self, user: User) -> Tokens:
+    async def generate(self, user: User) -> Tokens:
         """Generate a pair of access tokens and refresh"""
 
         access_token = await self._generate_token(

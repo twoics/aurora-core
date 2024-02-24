@@ -14,5 +14,5 @@ class MatrixConnectionsPool:
     async def disconnect(self, user: User, matrix: Matrix):
         """Delete user from pool"""
 
-    async def get_connected_matrices_uuid_by(self, user: User) -> List[str]:
+    async def get_user_controlled_matrices(self, user: User) -> List[str]:
         """Get all matrices uuids to which the user is connected"""

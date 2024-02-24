@@ -18,7 +18,7 @@ class MatrixRepo(typing.Protocol):
     async def remove_user(self, matrix_uuid: str, user: User) -> None:
         """Remove a user from the matrix group"""
 
-    async def update_matrix(self, matrix_uuid: str, matrix: MatrixUpdate) -> None:
+    async def update(self, matrix_uuid: str, matrix: MatrixUpdate) -> None:
         """Update the matrix by passing data"""
 
     async def get_by_uuid(self, matrix_uuid: str) -> Matrix | None:

@@ -18,21 +18,21 @@ class UserMongoRepository(UserRepo):
         await user.update(Set({User.access_key: generate_hash(access_key)}))
         return access_key
 
-    async def create_user(self, user: UserRegister) -> None:
+    async def create(self, user: UserRegister) -> None:
         data = user.model_dump()
         data['password'] = generate_hash(data['password'])
         await User(**data).insert()
 
-    async def update_user(self, username: str, user: UserUpdate) -> None:
+    async def update(self, username: str, user: UserUpdate) -> None:
         await User.find_one(User.username == username).update(Set((user.model_dump())))
 
     async def get_by_id(self, user_id: str) -> User | None:
         return await User.find_one(User.id == ObjectId(user_id))
 
-    async def block_user(self, user: User) -> None:
+    async def block(self, user: User) -> None:
         await self._update_matrix_access(user, matrix_access=False)
 
-    async def unblock_user(self, user: User) -> None:
+    async def unblock(self, user: User) -> None:
         await self._update_matrix_access(user, matrix_access=True)
 
     async def get_by_access_key(self, access_key: str) -> User | None:
