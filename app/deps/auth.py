@@ -47,8 +47,7 @@ async def get_user_by_ws(
     """Get user from token in websocket query params"""
 
     key = request.query_params.get('access_key')
-    user = await user_repo.get_by_access_key(key)
-    if not key or not user:
+    if not key or not (user := await user_repo.get_by_access_key(key)):
         raise WebSocketException(
             status.WS_1008_POLICY_VIOLATION,
             reason='Invalid access key',
