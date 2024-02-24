@@ -1,3 +1,4 @@
+import logging
 from functools import wraps
 from typing import List
 
@@ -27,6 +28,7 @@ from starlette import status
 from starlette.responses import Response
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 def matrix_not_exists(endpoint):
@@ -37,6 +39,7 @@ def matrix_not_exists(endpoint):
         matrix_repo, uuid = kwargs['matrix_repo'], kwargs['data'].uuid
         matrix_exists = await matrix_repo.get_by_uuid(uuid)
         if matrix_exists:
+            logger.info(f'Matrix with {uuid} uuid already exists')
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST, detail='Matrix already exists'
             )

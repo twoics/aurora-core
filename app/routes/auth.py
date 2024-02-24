@@ -1,3 +1,5 @@
+import logging
+
 from deps.auth import get_auth_service
 from deps.auth import get_current_user
 from deps.repo import get_user_repo
@@ -12,6 +14,7 @@ from starlette import status
 from utils.hashing import verify
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 @router.post('/login')
@@ -24,6 +27,7 @@ async def login(
 
     exist_user = await user_repo.get_by_name(form_data.username)
     if not exist_user or not verify(exist_user.password, form_data.password):
+        logger.info(f'Someone tried to login with username {form_data.username}')
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail='Wrong credentials')
 
     return {**await auth_service.generate(exist_user)}
@@ -39,5 +43,6 @@ async def refresh(
     """Refresh token pair by refresh token"""
 
     if not await auth_service.can_renew(access_token, refresh_token):
+        logger.info('Bad claims or access token not available from this refresh token')
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail='Token has expired')
     return {**await auth_service.generate(user)}

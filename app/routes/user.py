@@ -1,3 +1,4 @@
+import logging
 from functools import wraps
 from typing import List
 
@@ -24,6 +25,7 @@ from starlette import status
 from starlette.responses import Response
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 def user_not_exists(endpoint):
@@ -31,9 +33,10 @@ def user_not_exists(endpoint):
 
     @wraps(endpoint)
     async def wrapped_endpoint(**kwargs):
-        user_repo, user = kwargs['user_repo'], kwargs['user']
-        exist_user = await user_repo.get_by_name(user.username)
+        user_repo, username = kwargs['user_repo'], kwargs['user'].username
+        exist_user = await user_repo.get_by_name(username)
         if exist_user:
+            logger.info(f'User with {username} name already exists')
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST, detail='User already exists'
             )

@@ -1,3 +1,4 @@
+import logging
 from json import JSONDecodeError
 from typing import List
 
@@ -25,6 +26,7 @@ from starlette.status import WS_1009_MESSAGE_TOO_BIG
 from starlette.websockets import WebSocketDisconnect
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 async def receive(websocket) -> dict:
@@ -60,6 +62,7 @@ async def validate_credentials(matrix_repo: MatrixRepo, user: User, uuid: str):
         or not await matrix_repo.user_exists(uuid, user)
         or not user.is_matrices_access
     ):
+        logger.info(f'User {user.username} does not have access connect to the matrix')
         raise WebSocketException(WS_1003_UNSUPPORTED_DATA, 'Unsupported UUID')
 
 
@@ -76,12 +79,15 @@ async def remote_control(
 ):
     """Matrix Remote control"""
 
+    logger.info(f'User {user.username} initiate connect to matrix {uuid}')
     await validate_credentials(matrix_repo, user, uuid)
     await websocket.accept()
+    logger.info('Connection accepted')
 
     matrix = await matrix_repo.get_by_uuid(uuid)
     ratelimit = WebSocketRateLimiter(seconds=1, times=config.WS_QUERY_COUNT_PER_SECOND)
     await pool.connect(user, matrix)
+    logger.info(f'Put {user.username}:{matrix.uuid} connection to pool')
 
     try:
         while True:
@@ -95,3 +101,5 @@ async def remote_control(
         return
     finally:
         await pool.disconnect(user, matrix)
+        logger.info(f'Delete {user.username}:{matrix.uuid} connection from pool')
+        logger.info('Connection closed')

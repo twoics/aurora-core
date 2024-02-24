@@ -1,3 +1,5 @@
+import logging
+
 from config.config import Settings
 from deps.config import get_settings
 from deps.repo import get_user_repo
@@ -12,6 +14,7 @@ from services.auth.tokens import TokenAuth
 from starlette import status
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='auth/login')
+logger = logging.getLogger(__name__)
 
 
 def get_auth_service(conf: Settings = Depends(get_settings)) -> TokenAuth:
@@ -28,6 +31,7 @@ async def get_current_user(
     """Validate access token and return user by this token"""
 
     if not (claims := await auth_service.decode(access_token)):
+        logger.info('Unable to decode token and get claims')
         raise HTTPException(status.HTTP_403_FORBIDDEN, detail='Access denied')
     return await repo.get_by_id(claims['sub'])
 
@@ -36,6 +40,7 @@ async def get_admin_user(user: User = Depends(get_current_user)) -> User:
     """Validate access token and return user by this token if user is admin"""
 
     if not user.is_admin:
+        logger.info(f'User {user.username} try call admin api. Denied.')
         raise HTTPException(status.HTTP_403_FORBIDDEN, detail='You have no rights')
     return user
 
@@ -46,8 +51,11 @@ async def get_user_by_ws(
 ) -> User:
     """Get user from token in websocket query params"""
 
-    key = request.query_params.get('access_key')
+    key = request.query_params.get('access_key', '')
     if not key or not (user := await user_repo.get_by_access_key(key)):
+        logger.info(
+            f'Someone is trying to connect to the matrix with a non-existent access key {key}'
+        )
         raise WebSocketException(
             status.WS_1008_POLICY_VIOLATION,
             reason='Invalid access key',

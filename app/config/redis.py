@@ -1,6 +1,6 @@
 from functools import lru_cache
 
-from dependencies.config import get_settings
+from deps.config import get_settings
 from redis.asyncio import Redis as AsyncRedis
 
 

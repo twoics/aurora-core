@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
@@ -7,6 +8,8 @@ from config.config import Settings
 from jose import jwt
 from jose import JWTError
 from models import User
+
+logger = logging.getLogger(__name__)
 
 
 class Tokens(TypedDict):
@@ -31,6 +34,7 @@ class TokenAuth:
                 token, self._conf.SECRET_KEY, algorithms=[self._conf.ALGORITHM]
             )
         except JWTError:
+            logger.error('Unable to decode token')
             return None
 
     async def can_renew(self, access_token: str, refresh_token: str) -> bool:
@@ -48,6 +52,8 @@ class TokenAuth:
         refresh_token = await self._generate_token(
             user, self._conf.REFRESH_TOKEN_EXPIRE_MINUTES, access_token=access_token
         )
+
+        logger.info('Tokens generated successfully')
         return {'access_token': access_token, 'refresh_token': refresh_token}
 
     async def _generate_token(self, user: User, expire_minutes: int, **kwargs) -> str:
