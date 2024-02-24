@@ -1,3 +1,4 @@
+from deps.config import get_settings
 from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
@@ -12,4 +13,5 @@ def verify(hash_res: str, source: str) -> bool:
 def generate_hash(source: str) -> str:
     """Return the hash of password"""
 
-    return pwd_context.hash(source)
+    conf = get_settings()
+    return pwd_context.hash(source, salt=conf.HASH_SALT)
