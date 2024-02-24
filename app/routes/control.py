@@ -62,9 +62,7 @@ async def validate_credentials(matrix_repo: MatrixRepo, user: User, uuid: str):
         or not await matrix_repo.user_exists(uuid, user)
         or not user.is_matrices_access
     ):
-        logger.info(
-            f'User {user.username} does not have access to connect to the matrix'
-        )
+        logger.info(f'User {user.username} does not have access connect to the matrix')
         raise WebSocketException(WS_1003_UNSUPPORTED_DATA, 'Unsupported UUID')
 
 
