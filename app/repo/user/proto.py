@@ -10,11 +10,14 @@ class UserRepo(typing.Protocol):
     async def get_by_name(self, username: str) -> User | None:
         """Find user with this username and return it"""
 
-    async def create_user(self, user: UserRegister) -> None:
-        """Create user and hash his password"""
-
     async def get_by_id(self, user_id: str) -> User | None:
         """Get user by user_id as str"""
+
+    async def get_by_access_key(self, access_key: str) -> User | None:
+        """Get user by access_key"""
+
+    async def create_user(self, user: UserRegister) -> None:
+        """Create user and hash his password"""
 
     async def update_user(self, username: str, user: UserUpdate) -> None:
         """Update user with given username and set UserUpdate data"""

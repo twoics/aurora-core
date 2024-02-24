@@ -35,6 +35,10 @@ class UserMongoRepository(UserRepo):
     async def unblock_user(self, user: User) -> None:
         await self._update_matrix_access(user, matrix_access=True)
 
+    async def get_by_access_key(self, access_key: str) -> User | None:
+        hashed_key = generate_hash(access_key)
+        return await User.find_one(User.access_key == hashed_key)
+
     @staticmethod
     async def _update_matrix_access(user: User, matrix_access: bool) -> None:
         user.is_matrices_access = matrix_access
