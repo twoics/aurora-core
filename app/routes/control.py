@@ -52,6 +52,17 @@ async def preprocess_received_data(handler, data, matrix, user) -> List[int]:
     return data_to_send
 
 
+async def validate_credentials(matrix_repo: MatrixRepo, user: User, uuid: str):
+    """Validate user access to current matrix"""
+
+    if (
+        not await matrix_repo.get_by_uuid(uuid)
+        or not await matrix_repo.user_exists(uuid, user)
+        or not user.is_matrices_access
+    ):
+        raise WebSocketException(WS_1003_UNSUPPORTED_DATA, 'Unsupported UUID')
+
+
 @router.websocket('/{uuid}')
 async def remote_control(
     websocket: WebSocket,
@@ -65,14 +76,10 @@ async def remote_control(
 ):
     """Matrix Remote control"""
 
-    if (
-        not (matrix := await matrix_repo.get_by_uuid(uuid))
-        or not await matrix_repo.user_exists(uuid, user)
-        or not user.is_matrices_access
-    ):
-        raise WebSocketException(WS_1003_UNSUPPORTED_DATA, 'Unsupported UUID')
-
+    await validate_credentials(matrix_repo, user, uuid)
     await websocket.accept()
+
+    matrix = await matrix_repo.get_by_uuid(uuid)
     ratelimit = WebSocketRateLimiter(seconds=1, times=config.WS_QUERY_COUNT_PER_SECOND)
     await pool.connect(user, matrix)
 

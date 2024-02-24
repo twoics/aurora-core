@@ -42,18 +42,14 @@ async def get_admin_user(user: User = Depends(get_current_user)) -> User:
 
 async def get_user_by_ws(
     request: WebSocket,
-    auth_service: TokenAuth = Depends(get_auth_service),
-    repo: UserRepo = Depends(get_user_repo),
-):
+    user_repo: UserRepo = Depends(get_user_repo),
+) -> User:
     """Get user from token in websocket query params"""
 
-    token = request.query_params.get('token')
-    if not token:
+    key = request.query_params.get('access_key')
+    if not key or not (user := await user_repo.get_by_access_key(key)):
         raise WebSocketException(
-            status.WS_1008_POLICY_VIOLATION, reason='Token is required'
+            status.WS_1008_POLICY_VIOLATION,
+            reason='Invalid access key',
         )
-    if not (claims := await auth_service.decode_token(token)):
-        raise WebSocketException(
-            status.WS_1008_POLICY_VIOLATION, reason='Access denied'
-        )
-    return await repo.get_by_id(claims['sub'])
+    return user
