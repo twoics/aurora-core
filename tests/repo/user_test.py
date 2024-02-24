@@ -91,3 +91,13 @@ class TestAccessKey:
         hash_after = (await user_repo.get_by_name(created_user.username)).access_key
 
         assert hash_before != hash_after
+
+    @pytest.mark.asyncio
+    async def test_access_key_not_exist(self, user_repo: UserRepo):
+        assert not await user_repo.get_by_access_key('not exists')
+
+    @pytest.mark.asyncio
+    async def test_get_by_access_key(self, created_user: User, user_repo: UserRepo):
+        key = await user_repo.renew_access_key(created_user)
+        user = await user_repo.get_by_access_key(key)
+        assert user == created_user
