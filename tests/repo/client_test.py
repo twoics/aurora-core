@@ -17,9 +17,20 @@ class TestClient:
         assert isinstance(access_key, str)
 
     @pytest.mark.asyncio
-    async def test_empty_exist(self, client_repo: ClientRepo):
+    async def test_key_not_exist(self, client_repo: ClientRepo):
         assert not await client_repo.exists('something')
 
     @pytest.mark.asyncio
-    async def test_client_exist(self, client_repo: ClientRepo, created_client_key: str):
+    async def test_client_key_exist(
+        self, client_repo: ClientRepo, created_client_key: str
+    ):
         assert await client_repo.exists(created_client_key)
+
+    @pytest.mark.asyncio
+    async def test_empty_clients(self, client_repo: ClientRepo):
+        assert not await client_repo.get_all()
+
+    @pytest.mark.asyncio
+    @pytest.mark.usefixtures('created_client_key')
+    async def test_clients_exist(self, client_repo: ClientRepo):
+        assert len(await client_repo.get_all()) == 1
