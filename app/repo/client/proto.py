@@ -1,3 +1,4 @@
+from typing import List
 from typing import Protocol
 
 from dto.client import ClientCreate
@@ -19,3 +20,6 @@ class ClientRepo(Protocol):
 
     async def exists(self, access_key: str) -> bool:
         """A raw access key value is expected. NOT hash"""
+
+    async def get_all(self) -> List[Client]:
+        """Get all stored clients"""
