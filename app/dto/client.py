@@ -27,7 +27,7 @@ class ClientGet(BaseModel):
         }
 
 
-class ClientAccessKey(BaseModel):
+class ClientAccessKeyGet(BaseModel):
     access_key: str
 
     class Config:

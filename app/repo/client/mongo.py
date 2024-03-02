@@ -1,7 +1,6 @@
 from typing import List
 from typing import TypedDict
 
-from beanie.odm.operators.update.general import Set
 from dto.client import ClientCreate
 from models import Client
 from repo.client.proto import ClientRepo
@@ -20,11 +19,6 @@ class ClientMongoRepository(ClientRepo):
         await Client(
             **client.model_dump(), access_key=key['hashed_access_key']
         ).insert()
-        return key['access_key']
-
-    async def renew_access(self, client: Client):
-        key = gen_access_key()
-        await client.update(Set({Client.access_key: key['hashed_access_key']}))
         return key['access_key']
 
     async def exists(self, access_key: str) -> bool:

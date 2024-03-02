@@ -15,9 +15,6 @@ class ClientRepo(Protocol):
         The hashed access key will be stored in the database, you cannot get it in its raw form again
         """
 
-    async def renew_access(self, client: Client):
-        """Renew access key for this client"""
-
     async def exists(self, access_key: str) -> bool:
         """A raw access key value is expected. NOT hash"""
 
