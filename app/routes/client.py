@@ -23,7 +23,7 @@ async def get_all_clients(repo: ClientRepo = Depends(get_client_repo)):
 
 
 @router.post(
-    '/create', dependencies=[Depends(get_admin_user)], response_model=ClientAccessKeyGet
+    '/', dependencies=[Depends(get_admin_user)], response_model=ClientAccessKeyGet
 )
 async def create_access_key(
     client: ClientCreate = Body(...),
