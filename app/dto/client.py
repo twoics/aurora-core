@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class CreateClient(BaseModel):
+class ClientCreate(BaseModel):
     name: str
     description: str = ''
 
