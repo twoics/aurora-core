@@ -14,7 +14,7 @@ class AccessKey(TypedDict):
     hashed_access_key: str
 
 
-class MongoClientRepo(ClientRepo):
+class ClientMongoRepository(ClientRepo):
     async def create(self, client: ClientCreate) -> str:
         key = gen_access_key()
         await Client(
