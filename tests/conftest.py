@@ -11,7 +11,7 @@ from models import __all__ as all_models
 from models import Matrix
 from models import User
 from mongomock_motor import AsyncMongoMockClient
-from repo.client.mongo import MongoClientRepo
+from repo.client.mongo import ClientMongoRepository
 from repo.client.proto import ClientRepo
 from repo.matrix.mongo import MatrixMongoRepository
 from repo.matrix.proto import MatrixRepo
@@ -48,7 +48,7 @@ async def matrix_repo() -> MatrixRepo:
 async def client_repo() -> ClientRepo:
     """Get client repository"""
 
-    return MongoClientRepo()
+    return ClientMongoRepository()
 
 
 @pytest_asyncio.fixture()

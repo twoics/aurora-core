@@ -10,6 +10,7 @@ from fastapi import APIRouter
 from fastapi import Body
 from fastapi import Depends
 from repo.client.proto import ClientRepo
+from starlette import status
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -23,7 +24,10 @@ async def get_all_clients(repo: ClientRepo = Depends(get_client_repo)):
 
 
 @router.post(
-    '/', dependencies=[Depends(get_admin_user)], response_model=ClientAccessKeyGet
+    '/',
+    dependencies=[Depends(get_admin_user)],
+    response_model=ClientAccessKeyGet,
+    status_code=status.HTTP_201_CREATED,
 )
 async def create_access_key(
     client: ClientCreate = Body(...),
@@ -31,4 +35,4 @@ async def create_access_key(
 ):
     """Create a new client and return access token for this client"""
 
-    return await repo.create(client)
+    return ClientAccessKeyGet(access_key=await repo.create(client))
