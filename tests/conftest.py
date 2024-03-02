@@ -2,6 +2,7 @@ import pytest_asyncio
 from beanie import init_beanie
 from deps.auth import get_auth_service
 from deps.config import get_settings
+from dto.client import ClientCreate
 from dto.matrix import MatrixCreate
 from dto.user import UserRegister
 from httpx import AsyncClient
@@ -64,6 +65,15 @@ async def created_user(user_repo: UserRepo) -> User:
 
     await user_repo.create(UserRegister(username='twoics', password='qwerty'))
     return await user_repo.get_by_name('twoics')
+
+
+@pytest_asyncio.fixture()
+async def created_client_key(client_repo: ClientRepo) -> str:
+    """Get created client access key"""
+
+    return await client_repo.create(
+        ClientCreate(name='tg-bot', description='Some description')
+    )
 
 
 @pytest_asyncio.fixture()
