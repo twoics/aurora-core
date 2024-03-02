@@ -30,7 +30,22 @@ class ConnectionAgent:
         self._user_repo = user_repo
         self._uuid = matrix_uuid
 
-    async def user_valid(self, user: User):
+    async def accept(self):
+        """Accept user connection through some client"""
+
+        await self._client_valid()
+
+        logger.info('Client permissions have been verified. The client is valid')
+        await self._ws.accept()
+        logger.info('Websocket connection accepted')
+
+        user = await self._get_user_by_token()
+        logger.info(f'User {user.username} initiate connect to matrix {self._uuid}')
+        await self._user_valid(user)
+
+        logger.info('User connected successfully. Great')
+
+    async def _user_valid(self, user: User):
         """Validate user access to current matrix"""
 
         if (
@@ -43,7 +58,7 @@ class ConnectionAgent:
             )
             raise WebSocketException(WS_1003_UNSUPPORTED_DATA, 'Unsupported UUID')
 
-    async def client_valid(self):
+    async def _client_valid(self):
         """Validate client access key for connect"""
 
         key = self._ws.query_params.get('access_key', '')
@@ -51,7 +66,7 @@ class ConnectionAgent:
             logger.info(f'Someone tried to connect with wrong access key {key}')
             raise WebSocketException(WS_1003_UNSUPPORTED_DATA, 'Unsupported access key')
 
-    async def get_user_by_token(self) -> User:
+    async def _get_user_by_token(self) -> User:
         """Get user by token in query params"""
 
         token = self._ws.query_params.get('token')
@@ -62,18 +77,3 @@ class ConnectionAgent:
         if not (claims := await self._auth_service.decode(token)):
             raise WebSocketException(WS_1008_POLICY_VIOLATION, reason='Access denied')
         return await self._user_repo.get_by_id(claims['sub'])
-
-    async def accept(self):
-        """Accept user connection through some client"""
-
-        await self.client_valid()
-
-        logger.info('Client permissions have been verified. The client is valid')
-        await self._ws.accept()
-        logger.info('Websocket connection accepted')
-
-        user = await self.get_user_by_token()
-        logger.info(f'User {user.username} initiate connect to matrix {self._uuid}')
-        await self.user_valid(user)
-
-        logger.info('User connected successfully. Great')
