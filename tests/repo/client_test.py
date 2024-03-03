@@ -34,3 +34,13 @@ class TestClient:
     @pytest.mark.usefixtures('created_client_key')
     async def test_clients_exist(self, client_repo: ClientRepo):
         assert len(await client_repo.get_all()) == 1
+
+    @pytest.mark.asyncio
+    async def test_get_client_by_key(
+        self, client_repo: ClientRepo, created_client_key: str
+    ):
+        assert await client_repo.get_by_key(created_client_key)
+
+    @pytest.mark.asyncio
+    async def test_empty_client_by_key(self, client_repo: ClientRepo):
+        assert not await client_repo.get_by_key('not exist')
