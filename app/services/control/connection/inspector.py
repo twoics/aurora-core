@@ -3,9 +3,7 @@ import logging
 from config.config import Settings
 from fastapi import WebSocketException
 from fastapi_limiter.depends import WebSocketRateLimiter
-from models import Client
-from models import Matrix
-from models import User
+from services.control.connection.session import Session
 from services.pool.proto import MatrixConnectionsPool
 from starlette.status import WS_1008_POLICY_VIOLATION
 from starlette.websockets import WebSocket
@@ -16,9 +14,7 @@ logger = logging.getLogger(__name__)
 class ConnectionObserver:
     def __init__(
         self,
-        user: User,
-        matrix: Matrix,
-        client: Client,
+        session: Session,
         config: Settings,
         websocket: WebSocket,
         pool: MatrixConnectionsPool,
@@ -28,10 +24,10 @@ class ConnectionObserver:
 
         self._ws = websocket
         self._pool = pool
-        self._matrix = matrix
-        self._user = user
+        self._matrix = session.matrix
+        self._user = session.user
         self._config = config
-        self._client = client
+        self._client = session.client
 
     async def inspect(self) -> None:
         """Check client permissions and raise ws exception if something wrong"""

@@ -2,19 +2,18 @@ from json import JSONDecodeError
 from typing import List
 
 from fastapi import WebSocketException
-from models import Matrix
-from models import User
+from services.control.connection.session import Session
 from services.preprocess.proto import Preprocess
 from starlette.status import WS_1003_UNSUPPORTED_DATA
 from starlette.status import WS_1009_MESSAGE_TOO_BIG
 
 
 class DataReceiver:
-    def __init__(self, websocket, preprocess: Preprocess, matrix: Matrix, user: User):
+    def __init__(self, websocket, preprocess: Preprocess, session: Session):
         self._ws = websocket
         self._processor = preprocess
-        self._matrix = matrix
-        self._user = user
+        self._matrix = session.matrix
+        self._user = session.user
 
     async def receive(self) -> List[int]:
         data = await self._receive()
