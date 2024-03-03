@@ -2,6 +2,7 @@ import pytest_asyncio
 from beanie import init_beanie
 from deps.auth import get_auth_service
 from deps.config import get_settings
+from dto.client import ClientCreate
 from dto.matrix import MatrixCreate
 from dto.user import UserRegister
 from httpx import AsyncClient
@@ -10,6 +11,8 @@ from models import __all__ as all_models
 from models import Matrix
 from models import User
 from mongomock_motor import AsyncMongoMockClient
+from repo.client.mongo import ClientMongoRepository
+from repo.client.proto import ClientRepo
 from repo.matrix.mongo import MatrixMongoRepository
 from repo.matrix.proto import MatrixRepo
 from repo.user.mongo import UserMongoRepository
@@ -42,6 +45,13 @@ async def matrix_repo() -> MatrixRepo:
 
 
 @pytest_asyncio.fixture()
+async def client_repo() -> ClientRepo:
+    """Get client repository"""
+
+    return ClientMongoRepository()
+
+
+@pytest_asyncio.fixture()
 async def created_matrix(matrix_repo: MatrixRepo) -> Matrix:
     """Get created matrix"""
 
@@ -55,6 +65,15 @@ async def created_user(user_repo: UserRepo) -> User:
 
     await user_repo.create(UserRegister(username='twoics', password='qwerty'))
     return await user_repo.get_by_name('twoics')
+
+
+@pytest_asyncio.fixture()
+async def created_client_key(client_repo: ClientRepo) -> str:
+    """Get created client access key"""
+
+    return await client_repo.create(
+        ClientCreate(name='tg-bot', description='Some description')
+    )
 
 
 @pytest_asyncio.fixture()
