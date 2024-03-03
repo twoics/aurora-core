@@ -145,7 +145,7 @@ async def disconnect_user(
     matrix: Matrix = Depends(get_matrix_by_uuid),
     pool: MatrixConnectionsPool = Depends(get_matrix_connections_pool),
 ):
-    """Disconnect user from current connection"""
+    """Disconnect user from all connections"""
 
-    await pool.disconnect(user, matrix)
+    await pool.disconnect_all(user, matrix)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
