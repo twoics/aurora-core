@@ -13,7 +13,7 @@ from starlette.websockets import WebSocket
 logger = logging.getLogger(__name__)
 
 
-class ConnectionInspector:
+class ConnectionObserver:
     def __init__(
         self,
         user: User,
