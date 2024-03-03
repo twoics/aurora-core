@@ -2,11 +2,14 @@ import logging
 
 from fastapi import WebSocket
 from fastapi import WebSocketException
+from models import Client
+from models import Matrix
 from models import User
 from repo.client.proto import ClientRepo
 from repo.matrix.proto import MatrixRepo
 from repo.user.proto import UserRepo
 from services.auth.tokens import TokenAuth
+from services.control.connection.session import Session
 from starlette.status import WS_1003_UNSUPPORTED_DATA
 from starlette.status import WS_1008_POLICY_VIOLATION
 
@@ -30,26 +33,27 @@ class ConnectionAgent:
         self._user_repo = user_repo
         self._uuid = matrix_uuid
 
-    async def accept(self):
+    async def accept(self) -> Session:
         """Accept user connection through some client"""
 
-        await self._client_valid()
+        client = await self._get_client()
 
         logger.info('Client permissions have been verified. The client is valid')
         await self._ws.accept()
         logger.info('Websocket connection accepted')
 
-        user = await self._get_user_by_token()
+        user = await self._get_user()
         logger.info(f'User {user.username} initiate connect to matrix {self._uuid}')
-        await self._user_valid(user)
+        matrix = await self._get_user_matrix(user)
 
         logger.info('User connected successfully. Great')
+        return Session(user=user, matrix=matrix, client=client)
 
-    async def _user_valid(self, user: User):
+    async def _get_user_matrix(self, user: User) -> Matrix:
         """Validate user access to current matrix"""
 
         if (
-            not await self._matrix_repo.get_by_uuid(self._uuid)
+            not (matrix := await self._matrix_repo.get_by_uuid(self._uuid))
             or not await self._matrix_repo.user_exists(self._uuid, user)
             or not user.is_matrices_access
         ):
@@ -57,16 +61,18 @@ class ConnectionAgent:
                 f'User {user.username} does not have access to this matrix. Denied'
             )
             raise WebSocketException(WS_1003_UNSUPPORTED_DATA, 'Unsupported UUID')
+        return matrix
 
-    async def _client_valid(self):
-        """Validate client access key for connect"""
+    async def _get_client(self) -> Client:
+        """Validate client access key for connect and return client for this key"""
 
         key = self._ws.query_params.get('access_key', '')
-        if not (await self._client_repo.exists(key)):
+        if not (client := await self._client_repo.get_by_key(key)):
             logger.info(f'Someone tried to connect with wrong access key {key}')
             raise WebSocketException(WS_1003_UNSUPPORTED_DATA, 'Unsupported access key')
+        return client
 
-    async def _get_user_by_token(self) -> User:
+    async def _get_user(self) -> User:
         """Get user by token in query params"""
 
         token = self._ws.query_params.get('token')
