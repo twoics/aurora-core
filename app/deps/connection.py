@@ -9,7 +9,7 @@ from repo.client.proto import ClientRepo
 from repo.matrix.proto import MatrixRepo
 from repo.user.proto import UserRepo
 from services.auth.tokens import TokenAuth
-from services.connection import ConnectionAgent
+from services.connection.agent import ConnectionAgent
 from services.connection.sender import DataSender
 from services.delivery.proto import Delivery
 from starlette.websockets import WebSocket
