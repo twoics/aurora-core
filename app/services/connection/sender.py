@@ -1,5 +1,6 @@
 from typing import List
 
+from services.connection.session import Session
 from services.delivery.proto import Delivery
 from starlette.websockets import WebSocket
 
@@ -9,8 +10,8 @@ class DataSender:
         self._ws = websocket
         self._delivery = delivery
 
-    async def send(self, uuid: str, message: List[int]):
+    async def send(self, session: Session, message: List[int]):
         """Send data to specific matrix"""
 
-        await self._delivery.send(uuid, message)
+        await self._delivery.send(session.matrix.uuid, message)
         await self._ws.send_text('DONE')

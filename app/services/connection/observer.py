@@ -8,6 +8,7 @@ from services.connection.session import Session
 from services.pool.proto import MatrixConnectionsPool
 from starlette.status import WS_1008_POLICY_VIOLATION
 from starlette.websockets import WebSocket
+from starlette.websockets import WebSocketDisconnect
 
 logger = logging.getLogger(__name__)
 
@@ -76,6 +77,9 @@ class ConnectionObserver:
         await self._pool.disconnect(self._user, self._matrix)
         logger.info(f'Delete {self._user.username}:{self._matrix.uuid} from pool')
         logger.info('Connection in pool closed')
+
+        if exc_type is WebSocketDisconnect:
+            return True
 
 
 class ObserverFactory:
