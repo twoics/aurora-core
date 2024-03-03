@@ -53,10 +53,9 @@ class ConnectionObserver:
         self._ws = context.websocket
         self._pool = context.pool
         self._context = context
-        self._matrix, self._user, self._client, self._config = (
+        self._matrix, self._user, self._config = (
             context.session.matrix,
             context.session.user,
-            context.session.client,
             context.config,
         )
 
