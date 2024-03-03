@@ -39,8 +39,8 @@ class Inspector:
         )
         return f'{user.id}:{client.id}:{matrix.uuid}'
 
-    async def inspect(self) -> None:
-        """Check client permissions and raise ws exception if something wrong"""
+    async def inspect_user(self) -> None:
+        """Check user permissions and raise ws exception if something wrong"""
 
         user, matrix = self._session.user, self._session.matrix
         await self._ratelimit(self._ws, self._get_rate_key())
