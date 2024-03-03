@@ -21,9 +21,12 @@ class ClientMongoRepository(ClientRepo):
         ).insert()
         return key['access_key']
 
-    async def exists(self, access_key: str) -> bool:
+    async def get_by_key(self, access_key: str) -> Client | None:
         hashed_access_key = get_key_hash(access_key)
-        return bool(await Client.find_one(Client.access_key == hashed_access_key))
+        return await Client.find_one(Client.access_key == hashed_access_key)
+
+    async def exists(self, access_key: str) -> bool:
+        return bool(await self.get_by_key(access_key))
 
     async def get_all(self) -> List[Client]:
         return await Client.all().to_list()
