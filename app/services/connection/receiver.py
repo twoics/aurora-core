@@ -2,7 +2,7 @@ from json import JSONDecodeError
 from typing import List
 
 from fastapi import WebSocketException
-from services.control.connection.session import Session
+from services.connection.session import Session
 from services.preprocess.proto import Preprocess
 from starlette.status import WS_1003_UNSUPPORTED_DATA
 from starlette.status import WS_1009_MESSAGE_TOO_BIG

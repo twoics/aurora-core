@@ -9,7 +9,7 @@ from repo.client.proto import ClientRepo
 from repo.matrix.proto import MatrixRepo
 from repo.user.proto import UserRepo
 from services.auth.tokens import TokenAuth
-from services.control.connection.session import Session
+from services.connection.session import Session
 from starlette.status import WS_1003_UNSUPPORTED_DATA
 from starlette.status import WS_1008_POLICY_VIOLATION
 

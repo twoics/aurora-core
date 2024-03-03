@@ -3,7 +3,7 @@ import logging
 from config.config import Settings
 from fastapi import WebSocketException
 from fastapi_limiter.depends import WebSocketRateLimiter
-from services.control.connection.session import Session
+from services.connection.session import Session
 from services.pool.proto import MatrixConnectionsPool
 from starlette.status import WS_1008_POLICY_VIOLATION
 from starlette.websockets import WebSocket
