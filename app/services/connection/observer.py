@@ -3,7 +3,7 @@ import logging
 
 from config.config import Settings
 from fastapi import WebSocketException
-from fastapi_limiter.depends import WebSocketRateLimiter
+from fastapi_limiter.depends import WebSocketRateLimiter as Limiter
 from services.connection.session import Session
 from services.pool.proto import MatrixConnectionsPool
 from starlette.status import WS_1008_POLICY_VIOLATION
@@ -22,7 +22,7 @@ class Context:
 
 
 class Inspector:
-    def __init__(self, context: Context, ratelimit: WebSocketRateLimiter):
+    def __init__(self, context: Context, ratelimit: Limiter):
         self._ratelimit = ratelimit
         self._ws = context.websocket
         self._pool = context.pool
@@ -67,9 +67,7 @@ class ConnectionObserver:
     async def __aenter__(self) -> Inspector:
         """Add user in connection pool"""
 
-        limit = WebSocketRateLimiter(
-            seconds=1, times=self._config.WS_QUERY_COUNT_PER_SECOND
-        )
+        limit = Limiter(seconds=1, times=self._config.WS_QUERY_COUNT_PER_SECOND)
         await self._pool.connect(self._client, self._user, self._matrix)
         logger.info(f'Put {self._user.username}:{self._matrix.uuid} connection to pool')
 
