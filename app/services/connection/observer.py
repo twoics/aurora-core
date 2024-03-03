@@ -28,7 +28,7 @@ class Inspector:
         self._pool = context.pool
         self._session = context.session
 
-    async def _get_rate_key(self) -> str:
+    def _get_rate_key(self) -> str:
         """Get a key for the ratelimit"""
 
         sess_dict = dataclasses.asdict(self._session)

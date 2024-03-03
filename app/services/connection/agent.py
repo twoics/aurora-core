@@ -75,7 +75,7 @@ class ConnectionAgent:
     async def _get_user(self) -> User:
         """Get user by token in query params"""
 
-        token = self._ws.query_params.get('token')
+        token = self._ws.query_params.get('user_access_token')
         if not token:
             raise WebSocketException(
                 WS_1008_POLICY_VIOLATION, reason='Token is required'
