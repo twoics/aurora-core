@@ -84,7 +84,7 @@ class ConnectionObserver:
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         """Remove user from connection pool"""
 
-        await self._pool.disconnect(self._client, self._user, self._matrix)
+        await self._pool.disconnect(self._client, self._user)
         logger.info(f'Delete {self._user.username}:{self._matrix.uuid} from pool')
         logger.info('Connection in pool closed')
 
