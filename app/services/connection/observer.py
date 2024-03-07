@@ -64,6 +64,14 @@ class ConnectionObserver:
             context.config,
         )
 
+    async def is_possible_connect(self) -> bool:
+        """
+        Check is possible to connect.
+        If user already connected then it impossible
+        """
+
+        return not self._pool.is_connected(self._client, self._user, self._matrix)
+
     async def __aenter__(self) -> Inspector:
         """Add user in connection pool"""
 
