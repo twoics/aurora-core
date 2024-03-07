@@ -16,10 +16,10 @@ class RedisConnectionPool(MatrixConnectionsPool):
     async def is_connected(self, client: Client, user: User, matrix: Matrix) -> bool:
         key = await self._get_user_client_key(client, user)
         val = self._get_matrix_value(matrix)
-        return (await self._redis.get(key)) == val
+        return (await self._redis.get(key)) == val.encode()
 
     async def connect(self, client: Client, user: User, matrix: Matrix):
-        if self.is_connected(client, user, matrix):
+        if await self.is_connected(client, user, matrix):
             raise ConnectionError('Client already connected')
 
         key = await self._get_user_client_key(client, user)
@@ -36,10 +36,11 @@ class RedisConnectionPool(MatrixConnectionsPool):
 
     async def get_user_controlled_matrices(self, user: User) -> List[str]:
         keys = await self._redis.keys(f'{self._prefix}:{str(user.id)}:*')
-        return await self._redis.mget(keys)
+        raw_values = await self._redis.mget(keys)
+        return [value.decode() for value in raw_values]
 
     async def _get_user_client_key(self, client: Client, user: User) -> str:
-        return f'{self._get_user_key(user)}:{str(client.id)}'
+        return f'{await self._get_user_key(user)}:{str(client.id)}'
 
     async def _get_user_key(self, user: User) -> str:
         return f'{self._prefix}:{str(user.id)}'

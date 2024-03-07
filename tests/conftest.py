@@ -1,3 +1,4 @@
+import fakeredis.aioredis
 import pytest_asyncio
 from beanie import init_beanie
 from deps.auth import get_auth_service
@@ -8,6 +9,7 @@ from dto.user import UserRegister
 from httpx import AsyncClient
 from main import app
 from models import __all__ as all_models
+from models import Client
 from models import Matrix
 from models import User
 from mongomock_motor import AsyncMongoMockClient
@@ -17,6 +19,8 @@ from repo.matrix.mongo import MatrixMongoRepository
 from repo.matrix.proto import MatrixRepo
 from repo.user.mongo import UserMongoRepository
 from repo.user.proto import UserRepo
+from services.pool.clients import RedisConnectionPool
+from services.pool.proto import MatrixConnectionsPool
 
 
 @pytest_asyncio.fixture(autouse=True)
@@ -101,3 +105,14 @@ async def user_access_token(created_user) -> str:
 async def admin_access_token(admin_user) -> str:
     auth_serv = get_auth_service(get_settings())
     return (await auth_serv.generate(admin_user))['access_token']  # noqa
+
+
+@pytest_asyncio.fixture()
+async def connection_pool() -> MatrixConnectionsPool:
+    redis = fakeredis.aioredis.FakeRedis()
+    return RedisConnectionPool(redis=redis, conf=get_settings())
+
+
+@pytest_asyncio.fixture()
+async def external_client(created_client_key: str, client_repo: ClientRepo) -> Client:
+    return await client_repo.get_by_key(created_client_key)
