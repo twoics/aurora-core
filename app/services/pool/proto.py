@@ -12,10 +12,7 @@ class MatrixConnectionsPool:
     async def connect(self, client: Client, user: User, matrix: Matrix):
         """Add a new matrix-client connection into pool"""
 
-    async def disconnect(self, client: Client, user: User, matrix: Matrix):
-        """Disconnect user from specific connection"""
-
-    async def disconnect_all(self, user: User, matrix: Matrix):
+    async def disconnect_sessions(self, user: User):
         """Disconnect user from all connections"""
 
     async def get_user_controlled_matrices(self, user: User) -> List[str]:

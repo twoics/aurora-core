@@ -7,7 +7,6 @@ from deps.auth import get_current_user
 from deps.group import matrix_uuid_exist
 from deps.group import user_in_group
 from deps.group import user_not_in_group
-from deps.matrix import get_matrix_by_uuid
 from deps.pool import get_matrix_connections_pool
 from deps.repo import get_matrix_repo
 from deps.user import get_user_by_username
@@ -20,7 +19,6 @@ from fastapi import Body
 from fastapi import Depends
 from fastapi import HTTPException
 from fastapi import Path
-from models import Matrix
 from models import User
 from repo.matrix.proto import MatrixRepo
 from services.pool.proto import MatrixConnectionsPool
@@ -142,10 +140,9 @@ async def remove_matrix_user(
 @router.post('/{uuid}/{username}/disconnect', dependencies=[Depends(get_admin_user)])
 async def disconnect_user(
     user: User = Depends(get_user_by_username),
-    matrix: Matrix = Depends(get_matrix_by_uuid),
     pool: MatrixConnectionsPool = Depends(get_matrix_connections_pool),
 ):
     """Disconnect user from all connections"""
 
-    await pool.disconnect_all(user, matrix)
+    await pool.disconnect_sessions(user)
     return Response(status_code=status.HTTP_204_NO_CONTENT)

@@ -14,7 +14,7 @@ class RedisConnectionPool(MatrixConnectionsPool):
         self._prefix = f'{conf.GLOBAL_CASH_KEY_PREFIX}:ws:clients'
 
     async def is_connected(self, client: Client, user: User, matrix: Matrix) -> bool:
-        key = await self._get_user_key(client, user)
+        key = await self._get_user_client_key(client, user)
         val = self._get_matrix_value(matrix)
         return (await self._redis.get(key)) == val
 
@@ -22,16 +22,23 @@ class RedisConnectionPool(MatrixConnectionsPool):
         if self.is_connected(client, user, matrix):
             raise ConnectionError('Client already connected')
 
-        key = await self._get_user_key(client, user)
+        key = await self._get_user_client_key(client, user)
         val = self._get_matrix_value(matrix)
         await self._redis.set(name=key, value=val)
+
+    async def disconnect_sessions(self, user: User):
+        async for key in self._redis.scan_iter(f'{self._prefix}:{str(user.id)}:*'):
+            await self._redis.delete(key)
 
     async def get_user_controlled_matrices(self, user: User) -> List[str]:
         keys = await self._redis.keys(f'{self._prefix}:{str(user.id)}:*')
         return await self._redis.mget(keys)
 
-    async def _get_user_key(self, client: Client, user: User) -> str:
-        return f'{self._prefix}:{str(user.id)}:{str(client.id)}'
+    async def _get_user_client_key(self, client: Client, user: User) -> str:
+        return f'{self._get_user_key(user)}:{str(client.id)}'
+
+    async def _get_user_key(self, user: User) -> str:
+        return f'{self._prefix}:{str(user.id)}'
 
     @staticmethod
     def _get_matrix_value(matrix: Matrix) -> str:
