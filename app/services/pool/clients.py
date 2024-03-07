@@ -26,7 +26,11 @@ class RedisConnectionPool(MatrixConnectionsPool):
         val = self._get_matrix_value(matrix)
         await self._redis.set(name=key, value=val)
 
-    async def disconnect_sessions(self, user: User):
+    async def disconnect(self, client: Client, user: User):
+        key = await self._get_user_client_key(client, user)
+        await self._redis.delete(key)
+
+    async def disconnect_all(self, user: User):
         async for key in self._redis.scan_iter(f'{self._prefix}:{str(user.id)}:*'):
             await self._redis.delete(key)
 
