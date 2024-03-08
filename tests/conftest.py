@@ -1,3 +1,5 @@
+from typing import List
+
 import fakeredis.aioredis
 import pytest_asyncio
 from beanie import init_beanie
@@ -9,7 +11,6 @@ from dto.user import UserRegister
 from httpx import AsyncClient
 from main import app
 from models import __all__ as all_models
-from models import Client
 from models import Matrix
 from models import User
 from mongomock_motor import AsyncMongoMockClient
@@ -114,5 +115,22 @@ async def connection_pool() -> MatrixConnectionsPool:
 
 
 @pytest_asyncio.fixture()
-async def external_client(created_client_key: str, client_repo: ClientRepo) -> Client:
-    return await client_repo.get_by_key(created_client_key)
+async def users(user_repo: UserRepo) -> List[User]:
+    data = [
+        UserRegister(username='twoics', password='qwerty'),
+        UserRegister(username='aboba', password='qwerty'),
+    ]
+    [await user_repo.create(user_data) for user_data in data]
+
+    return [await user_repo.get_by_name(user_data.username) for user_data in data]
+
+
+@pytest_asyncio.fixture()
+async def matrices(matrix_repo: MatrixRepo) -> List[Matrix]:
+    data = [
+        MatrixCreate(uuid='0SN91roa6', name='Aurora'),
+        MatrixCreate(uuid='5N216FbB1', name='Matrix'),
+    ]
+    [await matrix_repo.create(matrix_data) for matrix_data in data]
+
+    return [await matrix_repo.get_by_uuid(matrix_data.uuid) for matrix_data in data]

@@ -1,17 +1,15 @@
 import pytest
-from models import Client
 from models import Matrix
 from models import User
 from services.pool.proto import MatrixConnectionsPool
 
 
-class TestSimpleConnectionPool:
+class TestSimpleConnection:
     @pytest.mark.asyncio
     async def test_not_connected(
         self,
         connection_pool: MatrixConnectionsPool,
         created_user: User,
-        external_client: Client,
         created_matrix: Matrix,
     ):
         assert not await connection_pool.is_connected(created_user)
@@ -21,7 +19,6 @@ class TestSimpleConnectionPool:
         self,
         connection_pool: MatrixConnectionsPool,
         created_user: User,
-        external_client: Client,
         created_matrix: Matrix,
     ):
         await connection_pool.connect(created_user, created_matrix)
@@ -32,7 +29,6 @@ class TestSimpleConnectionPool:
         self,
         connection_pool: MatrixConnectionsPool,
         created_user: User,
-        external_client: Client,
         created_matrix: Matrix,
     ):
         await connection_pool.connect(created_user, created_matrix)
@@ -44,7 +40,6 @@ class TestSimpleConnectionPool:
         self,
         connection_pool: MatrixConnectionsPool,
         created_user: User,
-        external_client: Client,
         created_matrix: Matrix,
     ):
         await connection_pool.connect(created_user, created_matrix)
@@ -65,7 +60,6 @@ class TestSimpleConnectionPool:
         self,
         connection_pool: MatrixConnectionsPool,
         created_user: User,
-        external_client: Client,
         created_matrix: Matrix,
     ):
         await connection_pool.connect(created_user, created_matrix)
