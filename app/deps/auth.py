@@ -5,8 +5,6 @@ from deps.config import get_settings
 from deps.repo import get_user_repo
 from fastapi import Depends
 from fastapi import HTTPException
-from fastapi import WebSocket
-from fastapi import WebSocketException
 from fastapi.security import OAuth2PasswordBearer
 from models import User
 from repo.user.proto import UserRepo
@@ -42,22 +40,4 @@ async def get_admin_user(user: User = Depends(get_current_user)) -> User:
     if not user.is_admin:
         logger.info(f'User {user.username} try call admin api. Denied.')
         raise HTTPException(status.HTTP_403_FORBIDDEN, detail='You have no rights')
-    return user
-
-
-async def get_user_by_ws(
-    request: WebSocket,
-    user_repo: UserRepo = Depends(get_user_repo),
-) -> User:
-    """Get user from token in websocket query params"""
-
-    key = request.query_params.get('access_key', '')
-    if not key or not (user := await user_repo.get_by_access_key(key)):
-        logger.info(
-            f'Someone is trying to connect to the matrix with a non-existent access key {key}'
-        )
-        raise WebSocketException(
-            status.WS_1008_POLICY_VIOLATION,
-            reason='Invalid access key',
-        )
     return user

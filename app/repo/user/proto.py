@@ -13,9 +13,6 @@ class UserRepo(typing.Protocol):
     async def get_by_id(self, user_id: str) -> User | None:
         """Get user by user_id as str"""
 
-    async def get_by_access_key(self, access_key: str) -> User | None:
-        """Get user by access_key"""
-
     async def create(self, user: UserRegister) -> None:
         """Create user and hash his password"""
 
@@ -27,6 +24,3 @@ class UserRepo(typing.Protocol):
 
     async def unblock(self, user: User) -> None:
         """Return user access to connect to matrices"""
-
-    async def renew_access_key(self, user: User) -> str:
-        """Return user access key to connect to matrices"""
