@@ -42,13 +42,8 @@ class Inspector:
     async def inspect_user(self) -> None:
         """Check user permissions and raise ws exception if something wrong"""
 
-        user, matrix, client = (
-            self._session.user,
-            self._session.matrix,
-            self._session.client,
-        )
         await self._ratelimit(self._ws, self._get_rate_key())
-        if not await self._pool.is_connected(client, user, matrix):
+        if not await self._pool.is_connected(self._session.user):
             raise WebSocketException(WS_1008_POLICY_VIOLATION, 'Access denied')
 
 
@@ -70,13 +65,13 @@ class ConnectionObserver:
         If user already connected then it impossible
         """
 
-        return not self._pool.is_connected(self._client, self._user, self._matrix)
+        return not self._pool.is_connected(self._user)
 
     async def __aenter__(self) -> Inspector:
         """Add user in connection pool"""
 
         limit = Limiter(seconds=1, times=self._config.WS_QUERY_COUNT_PER_SECOND)
-        await self._pool.connect(self._client, self._user, self._matrix)
+        await self._pool.connect(self._user, self._matrix)
         logger.info(f'Put {self._user.username}:{self._matrix.uuid} connection to pool')
 
         return Inspector(ratelimit=limit, context=self._context)
@@ -84,7 +79,7 @@ class ConnectionObserver:
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         """Remove user from connection pool"""
 
-        await self._pool.disconnect(self._client, self._user)
+        await self._pool.disconnect(self._user)
         logger.info(f'Delete {self._user.username}:{self._matrix.uuid} from pool')
         logger.info('Connection in pool closed')
 

@@ -9,7 +9,8 @@ class MqttDelivery(Delivery):
         self.client = client
 
     async def send(self, receiver_uuid: str, message: typing.List[int]):
-        await self.client.publish(
-            topic=f'matrix/{receiver_uuid}',  # noqa
-            payload=bytes(message),
-        )
+        pass
+        # await self.client.publish(
+        #     topic=f'matrix/{receiver_uuid}',  # noqa
+        #     payload=bytes(message),
+        # )

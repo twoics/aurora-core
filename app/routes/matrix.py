@@ -7,7 +7,6 @@ from deps.auth import get_current_user
 from deps.group import matrix_uuid_exist
 from deps.group import user_in_group
 from deps.group import user_not_in_group
-from deps.pool import get_matrix_connections_pool
 from deps.repo import get_matrix_repo
 from deps.user import get_user_by_username
 from dto.matrix import MatrixCreate
@@ -21,7 +20,6 @@ from fastapi import HTTPException
 from fastapi import Path
 from models import User
 from repo.matrix.proto import MatrixRepo
-from services.pool.proto import MatrixConnectionsPool
 from starlette import status
 from starlette.responses import Response
 
@@ -134,15 +132,4 @@ async def remove_matrix_user(
     """Remove a user from the matrix users"""
 
     await matrix_repo.remove_user(uuid, user)
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
-
-
-@router.post('/{uuid}/{username}/disconnect', dependencies=[Depends(get_admin_user)])
-async def disconnect_user(
-    user: User = Depends(get_user_by_username),
-    pool: MatrixConnectionsPool = Depends(get_matrix_connections_pool),
-):
-    """Disconnect user from all connections"""
-
-    await pool.disconnect_sessions(user)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
