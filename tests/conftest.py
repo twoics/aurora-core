@@ -1,3 +1,6 @@
+from typing import List
+
+import fakeredis.aioredis
 import pytest_asyncio
 from beanie import init_beanie
 from deps.auth import get_auth_service
@@ -17,6 +20,8 @@ from repo.matrix.mongo import MatrixMongoRepository
 from repo.matrix.proto import MatrixRepo
 from repo.user.mongo import UserMongoRepository
 from repo.user.proto import UserRepo
+from services.pool.clients import RedisConnectionPool
+from services.pool.proto import MatrixConnectionsPool
 
 
 @pytest_asyncio.fixture(autouse=True)
@@ -101,3 +106,31 @@ async def user_access_token(created_user) -> str:
 async def admin_access_token(admin_user) -> str:
     auth_serv = get_auth_service(get_settings())
     return (await auth_serv.generate(admin_user))['access_token']  # noqa
+
+
+@pytest_asyncio.fixture()
+async def connection_pool() -> MatrixConnectionsPool:
+    redis = fakeredis.aioredis.FakeRedis()
+    return RedisConnectionPool(redis=redis, conf=get_settings())
+
+
+@pytest_asyncio.fixture()
+async def users(user_repo: UserRepo) -> List[User]:
+    data = [
+        UserRegister(username='twoics', password='qwerty'),
+        UserRegister(username='aboba', password='qwerty'),
+    ]
+    [await user_repo.create(user_data) for user_data in data]
+
+    return [await user_repo.get_by_name(user_data.username) for user_data in data]
+
+
+@pytest_asyncio.fixture()
+async def matrices(matrix_repo: MatrixRepo) -> List[Matrix]:
+    data = [
+        MatrixCreate(uuid='0SN91roa6', name='Aurora'),
+        MatrixCreate(uuid='5N216FbB1', name='Matrix'),
+    ]
+    [await matrix_repo.create(matrix_data) for matrix_data in data]
+
+    return [await matrix_repo.get_by_uuid(matrix_data.uuid) for matrix_data in data]

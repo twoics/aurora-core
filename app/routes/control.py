@@ -4,10 +4,12 @@ from deps.connection import get_data_sender
 from deps.connection import get_observer_factory
 from fastapi import APIRouter
 from fastapi import Depends
+from fastapi import WebSocketException
 from services.connection.agent import ConnectionAgent
 from services.connection.observer import ObserverFactory
 from services.connection.receiver import DataReceiver
 from services.connection.sender import DataSender
+from starlette import status
 
 router = APIRouter()
 
@@ -23,6 +25,11 @@ async def remote_control(
 
     session = await agent.accept()
     observer = observer_factory.get_observer(session)
+    if not observer.is_possible_connect():
+        raise WebSocketException(
+            code=status.WS_1008_POLICY_VIOLATION,
+            reason='You are already connected to this matrix',
+        )
 
     async with observer as connection_observer:
         while True:
