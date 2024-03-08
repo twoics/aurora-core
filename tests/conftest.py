@@ -1,3 +1,5 @@
+from typing import List
+
 import fakeredis.aioredis
 import pytest_asyncio
 from beanie import init_beanie
@@ -116,3 +118,16 @@ async def connection_pool() -> MatrixConnectionsPool:
 @pytest_asyncio.fixture()
 async def external_client(created_client_key: str, client_repo: ClientRepo) -> Client:
     return await client_repo.get_by_key(created_client_key)
+
+
+@pytest_asyncio.fixture()
+async def clients(client_repo: ClientRepo) -> List[Client]:
+    access_keys = [
+        await client_repo.create(client_data)
+        for client_data in [
+            ClientCreate(name='tg-bot', description='Some description'),
+            ClientCreate(name='frontend', description='Second description'),
+        ]
+    ]
+
+    return [await client_repo.get_by_key(key) for key in access_keys]
