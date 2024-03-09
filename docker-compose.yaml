@@ -2,7 +2,7 @@ version: '3.0'
 
 services:
   mongo:
-    image: mongo:latest
+    image: mongo:5.0.25
     restart: unless-stopped
     ports:
       - "27017:27017"
@@ -10,7 +10,7 @@ services:
       - '.env'
 
   redis:
-    image: redis:alpine
+    image: redis:7.2.4
     ports:
       - "6379:6379"
 
