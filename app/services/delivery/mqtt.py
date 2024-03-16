@@ -6,7 +6,7 @@ from redis.asyncio import Redis as AsyncRedis
 from services.delivery.proto import Delivery
 
 
-class MqttDelivery(Delivery):
+class TaskQueueDelivery(Delivery):
     def __init__(self, redis: AsyncRedis, conf: Settings):
         self._redis = redis
         self._conf = conf
