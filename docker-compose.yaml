@@ -4,6 +4,8 @@ services:
   mongo:
     image: mongo:5.0.25
     restart: unless-stopped
+    volumes:
+      - './data:/data/db'
     ports:
       - "27017:27017"
     env_file:
@@ -18,7 +20,7 @@ services:
     build:
       context: ./
       dockerfile: docker/Dockerfile
-    entrypoint: uvicorn main:app --proxy-headers --host 0.0.0.0 --port 8000 --reload
+    entrypoint: uvicorn main:app --proxy-headers --host 0.0.0.0 --port 8000 --reload --log-config ../logging.yaml --log-level warning
     ports:
       - "8000:8000"
     env_file:

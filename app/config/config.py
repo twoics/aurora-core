@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_MINUTES: int
     WS_QUERY_COUNT_PER_SECOND: int
     GLOBAL_CASH_KEY_PREFIX: str
+    BROKER_QUEUE_NAME: str
 
     class Config:
         env_file = '.env'
