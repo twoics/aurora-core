@@ -3,12 +3,10 @@ from functools import wraps
 from typing import List
 
 from deps.auth import get_admin_user
-from deps.auth import get_current_user
 from deps.pool import get_matrix_connections_pool
 from deps.repo import get_matrix_repo
 from deps.repo import get_user_repo
 from deps.user import get_user_by_username
-from dto.access import AccessKeyGet
 from dto.matrix import MatrixGet
 from dto.user import UserRegister
 from dto.user import UserUpdate
@@ -55,16 +53,6 @@ async def register(
 
     await user_repo.create(UserRegister(**user.dict()))
     return Response(status_code=status.HTTP_201_CREATED)
-
-
-@router.post('/my/access-key', response_model=AccessKeyGet)
-async def generate_access_key(
-    user: User = Depends(get_current_user), user_repo: UserRepo = Depends(get_user_repo)
-):
-    """Generates an access_key unique for each user. It needs to connect to the matrix."""
-
-    access_key = await user_repo.renew_access_key(user)
-    return AccessKeyGet(access_key=access_key)
 
 
 @router.put(
