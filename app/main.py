@@ -1,10 +1,8 @@
 import contextlib
-import random
 
-import aiomqtt
 from config.base import init_database
 from config.redis import get_redis
-from dependencies.config import get_settings
+from deps.config import get_settings
 from fastapi import FastAPI
 from fastapi import WebSocketException
 from fastapi_limiter import FastAPILimiter
@@ -38,14 +36,7 @@ async def lifespan(*_):
     await init_database()
     redis_connection = aredis.from_url(conf.REDIS_URL, encoding='utf8')
     await FastAPILimiter.init(redis_connection, ws_callback=websocket_limit_callback)
-    async with aiomqtt.Client(
-        conf.MQTT_HOST,
-        username=conf.MQTT_USERNAME,
-        password=conf.MQTT_PASSWORD,
-        identifier=f'aurora-{hex(random.getrandbits(16))}',
-    ) as client:
-        app.state.amqtt_client = client  # noqa
-        yield
+    yield
 
 
 app = FastAPI(lifespan=lifespan)
