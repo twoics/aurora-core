@@ -65,7 +65,7 @@ class ConnectionObserver:
         If user already connected then it impossible
         """
 
-        return not self._pool.is_connected(self._user)
+        return not await self._pool.is_connected(self._user)
 
     async def __aenter__(self) -> Inspector:
         """Add user in connection pool"""

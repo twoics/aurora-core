@@ -20,8 +20,7 @@ class RedisConnectionPool(MatrixConnectionsPool):
         if await self.is_connected(user):
             raise ConnectionError('Client already connected')
 
-        key = self._get_key(user)
-        val = self._get_val(matrix)
+        key, val = self._get_key(user), self._get_val(matrix)
         await self._redis.set(name=key, value=val)
 
     async def disconnect(self, user: User):
