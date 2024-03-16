@@ -9,6 +9,7 @@ from fastapi_limiter import FastAPILimiter
 from prometheus_fastapi_instrumentator import Instrumentator
 from redis.asyncio import Redis as aredis
 from routes.auth import router as auth_router
+from routes.client import router as client_router
 from routes.control import router as rc_router
 from routes.matrix import router as matrix_router
 from routes.user import router as user_router
@@ -45,4 +46,5 @@ Instrumentator().instrument(app).expose(app)
 app.include_router(auth_router, tags=['Auth'], prefix='/auth')
 app.include_router(user_router, tags=['User'], prefix='/user')
 app.include_router(matrix_router, tags=['Matrix'], prefix='/matrix')
+app.include_router(client_router, tags=['Client'], prefix='/client')
 app.include_router(rc_router, tags=['Remote control'], prefix='/remote-control')
