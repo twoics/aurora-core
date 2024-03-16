@@ -1,0 +1,23 @@
+name: Worker CI/CD
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ci-cd:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: LOGIN
+        run: docker login -u ${{ secrets.DOCKER_HUB_LOGIN }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: BUILD
+        run: ./docker/dockerize.sh build
+
+      - name: PUSH
+        run: ./docker/dockerize.sh push
+
+      - name: CLEAN
+        run: ./docker/dockerize.sh clean
