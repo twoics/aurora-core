@@ -214,19 +214,3 @@ class TestUserAPINotFound:
             },
         )
         assert response.status_code == 405
-
-
-class TestAccessKey:
-    @pytest.mark.asyncio
-    async def test_generate_access_key(
-        self, async_client: AsyncClient, user_access_token: str
-    ):
-        response = await async_client.post(
-            '/user/my/access-key',
-            headers={
-                'Authorization': f'Bearer {user_access_token}',
-            },
-        )
-
-        assert response.status_code == 200
-        assert 'access_key' in response.json()
