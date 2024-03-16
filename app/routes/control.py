@@ -25,10 +25,10 @@ async def remote_control(
 
     session = await agent.accept()
     observer = observer_factory.get_observer(session)
-    if not observer.is_possible_connect():
+    if not await observer.is_possible_connect():
         raise WebSocketException(
             code=status.WS_1008_POLICY_VIOLATION,
-            reason='You are already connected to this matrix',
+            reason='You are already have active connections',
         )
 
     async with observer as connection_observer:
